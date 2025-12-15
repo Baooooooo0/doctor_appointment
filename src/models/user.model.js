@@ -9,11 +9,11 @@ exports.findByEmail = async (email) => {
   return rows[0]; // lay user dau tien, Email là unique->Nên chỉ có 0 hoặc 1 record->Nếu không tìm thấy → undefined
 };
 
-//nhan vao object user va insert user vao db
-exports.create = async (user) => {
-  await pool.query(
+// dùng cho transaction: truyền conn vào
+exports.createWithConn = async (conn, user) => {
+  await conn.query(
     `INSERT INTO users (id, name, email, password, role)
      VALUES (?, ?, ?, ?, ?)`,
-    Object.values(user)
+    [user.id, user.name, user.email, user.password, user.role]
   );
 };

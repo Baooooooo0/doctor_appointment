@@ -12,28 +12,50 @@ const bcrypt = require('bcryptjs');
 //Mỗi user sẽ có ID duy nhất, không trùng
 const { v4: uuid } = require('uuid');
 
-//Import User model
+//Import pool để dùng transaction
+const pool = require('../config/db');
+
+//Import model
 // Model này chịu trách nhiệm: Query database, findByEmail, create,...
 const User = require('../models/user.model');
+const Patient = require('../models/patient.model');
+const Doctor = require('../models/doctor.model');
 
-//REGISTER 
-//express tự truyền req từ client và trả về res
+
+//================ REGISTER =================
 exports.register = async (req, res) => {
   try {
     //lấy dữ liệu từ body req
-    const { name, email, password, role } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      dateOfBirth,
+      gender,
+      medicalHistory,
+      specialty,
+      experienceYears,
+      description
+    } = req.body;
 
     // 1. validate dữ liệu
     if (!email || !password || !role) {
       return res.status(400).json({ error: 'Missing fields' }); // trả về 400 bad request
     }
 
+    // role chỉ cho phép các giá trị bạn dùng trong middleware
+    const allowedRoles = ['PATIENT', 'DOCTOR', 'ADMIN'];
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+
     // 2. check email exists
     //Gọi model tìm user theo email
-    const existingUser = await User.findByEmail(email);
+    const existing = await User.findByEmail(email);
 
     //nếu user tồn tại
-    if (existingUser) {
+    if (existing) {
       return res.status(409).json({ error: 'Email already exists' }); //trả về 409 conflict
     }
 
@@ -41,28 +63,68 @@ exports.register = async (req, res) => {
     //hash password trước khi lưu vào db
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 4. create user
-    //tạo object user để lưu vào db
-    const user = {
-      id: uuid(),//sinh id ngẫu nhiên cho user 
-      name,
-      email,
-      password: hashedPassword,//password đã hash
-      role // 'PATIENT' | 'DOCTOR' | 'ADMIN', lưu role để sau này phân quyền
-    };
+    // 4. transaction: tạo user + patient/doctor
 
-    await User.create(user);// gọi model để inser user vào db 
+    // Gộp nhiều câu INSERT thành 1 giao dịch
+    // Nếu 1 bước lỗi → rollback toàn bộ
+    // Tránh tình trạng:
+    // Có user nhưng không có patient/doctor
+    // Dữ liệu “mồ côi”
+    const conn = await pool.getConnection();
+    try {
+      //bắt đầu stransaction
+      await conn.beginTransaction();
 
-    res.status(201).json({ message: 'Register success' }); // trả về 201 created
+      const userId = uuid(); //sinh id cho user
+
+      //tạo user trong bảng users
+      await conn.query(
+        `INSERT INTO users (id, name, email, password, role)
+         VALUES (?, ?, ?, ?, ?)`,
+        [userId, name, email, hashedPassword, role]
+      );
+
+      //tạo profile theo role
+      if (role === 'PATIENT') {
+        await conn.query(
+            //gắn userid để liên kết
+          `INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history)
+           VALUES (?, ?, ?, ?, ?)`,
+          [uuid(), userId, dateOfBirth ?? null, gender ?? null, medicalHistory ?? null]
+        );
+      }
+
+      if (role === 'DOCTOR') {
+        await conn.query(
+            //gắn userid để liên kết
+          `INSERT INTO doctors (id, user_id, specialty, experience_years, description)
+           VALUES (?, ?, ?, ?, ?)`,
+          [uuid(), userId, specialty ?? null, experienceYears ?? 0, description ?? null]
+        );
+      }
+
+      //chỉ commit khi user hoặc profile tạo thành công
+      await conn.commit();
+
+      res.status(201).json({ message: 'Register success' }); // trả về 201 created
+    } catch (err) {
+      await conn.rollback(); // nếu register thất bại thì rollback (tạo user hoặc patient/doctor fail)
+      console.error('REGISTER TRANSACTION ERROR:', err);
+      res.status(500).json({ error: 'Register failed' }); // trả về 500
+    } finally {
+      conn.release();
+    }
   } catch (err) {
-    console.error('REGISTER ERROR:', err); 
+    console.error('REGISTER ERROR:', err);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-//LOGIN
+
+//================ LOGIN =================
 exports.login = async (req, res) => {
   try {
+    //lấy dữ liệu từ req.body
     const { email, password } = req.body;
 
     // 1. check input
@@ -78,26 +140,41 @@ exports.login = async (req, res) => {
 
     // 3. compare password
     const isMatch = await bcrypt.compare(password, user.password); //so sánh password user nhập với password đã hash trong db
-
-    //nếu không khớp
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // 4. create token payload
-    //tạo Payload = dữ liệu nhúng vào JWT
-    // Lưu ID và role
-    // Sau này middleware dùng để: Kiểm tra quyền và Xác định user hiện tại
+    // 4. lấy patientId / doctorId theo role để API /appointments, schedules biết nên lấy patientid hay doctorid
+    let patientId = null;
+    let doctorId = null;
+
+    if (user.role === 'PATIENT') {
+        //query tìm patientid theo userid
+      const [rows] = await pool.query(
+        'SELECT id FROM patients WHERE user_id = ?',
+        [user.id]
+      );
+      patientId = rows[0]?.id || null; //lấy kết quả đầu tiên 
+    }
+
+    //query tìm doctorid theo userid
+    if (user.role === 'DOCTOR') {
+      const [rows] = await pool.query(
+        'SELECT id FROM doctors WHERE user_id = ?',
+        [user.id]
+      );
+      doctorId = rows[0]?.id || null;
+    }
+
+    // 5. create token payload
     const payload = {
       userId: user.id,
       role: user.role,
-      // thêm sau nếu có:
-      // patientId: ...
-      // doctorId: ...
+      patientId,
+      doctorId
     };
 
-    // 5. sign JWT
-    //tạo jwt
+    // 6. sign JWT
     const token = jwt.sign(
       payload, // dữ liệu bên trong token
       process.env.JWT_SECRET, //secret key chỉ server biết để verify token
@@ -106,9 +183,7 @@ exports.login = async (req, res) => {
 
     //trả về res
     res.json({
-      token, // token để client lưu 
-
-      //Trả thông tin user
+      token, // token để client lưu
       user: {
         id: user.id,
         name: user.name,
@@ -117,7 +192,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error('LOGIN ERROR:', err);
     res.status(500).json({ error: 'Server error' });
   }
 };
-
