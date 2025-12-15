@@ -26,7 +26,7 @@ module.exports = (roles = []) => {
       req.user = decoded; //gan user vao req de controller khong can decoded lai token 
       next(); //neu token hop le va role hope le thi vao controller
     } catch {
-      res.sendStatus(401); // tra ve unauthorize coi nhu chua dang nhap 
+      res.sendStatus(401); //neu ko hop le tra ve unauthorize coi nhu chua dang nhap 
     }
   };
 };
