@@ -17,3 +17,18 @@ exports.createWithConn = async (conn, user) => {
     [user.id, user.name, user.email, user.password, user.role]
   );
 };
+
+
+//======================================
+// UPDATE user basic info (name, phone)
+//======================================
+exports.updateBasicInfo = async (userId, data) => {
+  await pool.query(
+    `UPDATE users SET name = ?, phone = ? WHERE id = ?`,
+    [
+      data.name ?? null,
+      data.phone ?? null,
+      userId
+    ]
+  );
+};

@@ -18,7 +18,7 @@ app.use(express.json()); //Chuyển: { "email": "a@gmail.com" } thành: req.body
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 
 // Patients API
-// app.use('/api/v1/patients', require('./routes/patient.routes'));
+app.use('/api/v1/patients', require('./routes/patient.routes'));
 
 // Doctors API
 app.use('/api/v1/doctors', require('./routes/doctor.routes'));
