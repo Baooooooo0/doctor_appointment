@@ -30,7 +30,7 @@ app.use('/api/v1/appointments', require('./routes/appointment.routes'));
 app.use('/api/v1/schedules', require('./routes/schedule.routes'));
 
 // Reviews API
-// app.use('/api/v1/reviews', require('./routes/review.routes'));
+app.use('/api/v1/reviews', require('./routes/review.routes'));
 
 // Notifications API
 // app.use('/api/v1/notifications', require('./routes/notification.routes'));
