@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (roles = []) => {
+  
   //middleware bat req
   return (req, res, next) => {
     //Lấy JWT token từ header Authorization theo chuẩn Bearer
@@ -30,3 +31,4 @@ module.exports = (roles = []) => {
     }
   };
 };
+

@@ -33,6 +33,6 @@ app.use('/api/v1/schedules', require('./routes/schedule.routes'));
 app.use('/api/v1/reviews', require('./routes/review.routes'));
 
 // Notifications API
-// app.use('/api/v1/notifications', require('./routes/notification.routes'));
+app.use('/api/v1/notifications', require('./routes/notification.routes'));
 
 module.exports = app;
