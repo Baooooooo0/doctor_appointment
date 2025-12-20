@@ -7,6 +7,7 @@ const Schedule = require('../models/schedule.model');
 //=====================
 exports.getAvailableSlots = async (req, res) => {
   try {
+    // lấy doctorId và date từ req
     const { doctorId, date } = req.query;
 
     // validate input cơ bản
@@ -26,6 +27,7 @@ exports.getAvailableSlots = async (req, res) => {
 // GET /api/v1/schedules/me?date=YYYY-MM-DD
 // Doctor xem slot của chính mình theo ngày (có cả slot đã unavailable)
 //=====================
+//tìm lịch trình theo ngày của bác sĩ
 exports.getMySchedulesByDate = async (req, res) => {
   try {
     // req.user.doctorId lấy từ JWT payload sau login

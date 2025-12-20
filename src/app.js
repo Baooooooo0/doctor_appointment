@@ -24,7 +24,7 @@ app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/doctors', require('./routes/doctor.routes'));
 
 // Appointments API
-// app.use('/api/v1/appointments', require('./routes/appointment.routes'));
+app.use('/api/v1/appointments', require('./routes/appointment.routes'));
 
 // Schedules API
 app.use('/api/v1/schedules', require('./routes/schedule.routes'));

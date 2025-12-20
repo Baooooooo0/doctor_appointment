@@ -1,64 +1,217 @@
-const pool = require('../config/db'); //connection pool MySQL
-const { v4: uuid } = require('uuid'); //tạo id duy nhất cho appointment
+const pool = require('../config/db');
+const { v4: uuid } = require('uuid');
 
-//lay du lieu tu req 
+const Appointment = require('../models/appointment.model');
+// Nếu bạn có schedule.model thì import để dùng cho gọn.
+// const Schedule = require('../models/schedule.model');
+
+const VALID_STATUSES = ['PENDING', 'CONFIRMED', 'REJECTED', 'COMPLETED'];
+
+/**
+ * POST /api/v1/appointments
+ * Patient đặt lịch: chọn doctorId + scheduleId
+ */
 exports.createAppointment = async (req, res) => {
-  const { doctorId, scheduleId } = req.body; //lay doctorId va scheduleId tu frontend
-  const patientId = req.user.patientId; //lay patientId tu JWT middleware
+  // doctorId + scheduleId từ client gửi lên
+  const { doctorId, scheduleId } = req.body;
 
-  //lay connection rieng tu pool de chuan bi dung transaction, khong dung connection chung
+  // patientId lấy từ token (middleware auth gắn vào req.user)
+  const patientId = req.user.patientId; 
+
+  // Validate nhanh input
+  if (!doctorId || !scheduleId) {
+    return res.status(400).json({ error: 'Missing doctorId or scheduleId' });
+  }
+  if (!patientId) {
+    // trường hợp token không có patientId -> lỗi logic auth/login
+    return res.status(401).json({ error: 'Missing patientId in token' });
+  }
+
+  // Lấy connection để làm transaction (đảm bảo đặt lịch an toàn)
   const conn = await pool.getConnection();
-  try {
-    //bat dau transaction
-    //Từ đây trở đi:
-      // Mọi query chưa ghi hẳn vào DB
-      // Chỉ khi commit() thì mới lưu
-      // Có lỗi → rollback() → DB quay lại trạng thái cũ
-    await conn.beginTransaction(); 
 
-    //Tìm schedule theo scheduleId -> Chỉ lấy schedule còn trống (is_available = TRUE) -> FOR UPDATE → khóa row này
-    // FOR UPDATE: Request khác không thể đọc/ghi row này cho tới khi transaction hiện tại kết thúc -> Tránh 2 người đặt cùng 1 lịch
+  try {
+    await conn.beginTransaction();
+
+    /**
+     * 1) LOCK schedule bằng FOR UPDATE
+     * - Mục tiêu: nếu 2 người cùng đặt 1 slot, chỉ 1 người thắng
+     * - is_available = TRUE: chỉ slot còn trống mới đặt được
+     */
     const [schedules] = await conn.query(
       'SELECT * FROM schedules WHERE id = ? AND is_available = TRUE FOR UPDATE',
       [scheduleId]
     );
 
-    //Kiểm tra schedule có hợp lệ không
-    //Không tìm thấy schedule -> Ném lỗi → nhảy xuống catch → rollback
-    if (!schedules.length) throw new Error('Schedule not available');
+    // Nếu không có record => slot không tồn tại hoặc đã bị đặt
+    if (!schedules.length) {
+      // throw string để catch bắt và trả về 400
+      throw 'Schedule not available';
+    }
 
-    //Lấy dữ liệu schedule
-    const schedule = schedules[0]; //Vì id là unique, Lấy phần tử đầu tiên
+    const schedule = schedules[0];
 
-    //Tạo appointment mới
-    await conn.query(
-      `INSERT INTO appointments 
-      (id, patient_id, doctor_id, schedule_id, date, start_time, end_time)
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        uuid(),
-        patientId,
-        doctorId,
-        scheduleId,
-        schedule.date,
-        schedule.start_time,
-        schedule.end_time
-      ]
-    );
+    /**
+     * 2) (Optional) check doctorId có khớp schedule.doctor_id không
+     * -> tránh client gửi doctorId khác scheduleId
+     */
+    if (schedule.doctor_id && schedule.doctor_id !== doctorId) {
+      throw 'Schedule does not belong to this doctor';
+    }
 
-    //Đánh dấu schedule đã bị đặt
+    /**
+     * 3) Insert appointment
+     * - Lưu date/time theo schedule để tránh client “tự chế” giờ
+     */
+    await Appointment.insertWithConn(conn, {
+      id: uuid(),
+      patientId,
+      doctorId: schedule.doctor_id || doctorId, // ưu tiên từ schedule
+      scheduleId,
+      date: schedule.date,
+      startTime: schedule.start_time,
+      endTime: schedule.end_time
+    });
+
+    /**
+     * 4) Đánh dấu schedule đã bị chiếm
+     */
     await conn.query(
       'UPDATE schedules SET is_available = FALSE WHERE id = ?',
       [scheduleId]
     );
 
-    //Insert appointment & Update schedule, Nếu 1 trong 2 fail → không có gì được ghi
+    /**
+     * 5) Commit transaction: mọi thứ OK
+     */
     await conn.commit();
-    res.json({ message: 'Appointment created' });
+
+    return res.status(201).json({ message: 'Appointment created' });
   } catch (err) {
-    await conn.rollback(); //Nếu có lỗi (Schedule không available, Lỗi SQL, ...) → rollback
-    res.status(400).json({ error: err }); //request không hợp lệ
+    /**
+     * Nếu có lỗi ở bất cứ bước nào -> rollback để DB không bị “dở dang”
+     */
+    await conn.rollback();
+
+    return res.status(400).json({ error: err });
   } finally {
-    conn.release();//giải phóng connection
+    conn.release();
   }
+};
+
+/**
+ * PUT /api/v1/appointments/:id/confirm
+ * Doctor xác nhận lịch
+ */
+exports.confirm = async (req, res) => {
+  const { id } = req.params;
+
+  // doctorId lấy từ token
+  const doctorId = req.user.doctorId; // hoặc req.user.userId nếu bạn chưa tách doctor table
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) return res.status(404).json({ error: 'Appointment not found' });
+
+  // Check appointment thuộc doctor đang login
+  if (doctorId && appointment.doctor_id !== doctorId) {
+    return res.status(403).json({ error: 'Not your appointment' });
+  }
+
+  // Chỉ confirm khi đang pending
+  if (appointment.status !== 'PENDING') {
+    return res.status(400).json({ error: `Cannot confirm when status is ${appointment.status}` });
+  }
+
+  await Appointment.updateStatus(id, 'CONFIRMED');
+  return res.json({ message: 'Appointment confirmed' });
+};
+
+/**
+ * PUT /api/v1/appointments/:id/reject
+ * Doctor từ chối lịch
+ */
+exports.reject = async (req, res) => {
+  const { id } = req.params;
+  const doctorId = req.user.doctorId;
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) return res.status(404).json({ error: 'Appointment not found' });
+
+  if (doctorId && appointment.doctor_id !== doctorId) {
+    return res.status(403).json({ error: 'Not your appointment' });
+  }
+
+  if (appointment.status !== 'PENDING') {
+    return res.status(400).json({ error: `Cannot reject when status is ${appointment.status}` });
+  }
+
+  // Làm reject + mở lại slot schedule trong transaction để chắc chắn
+  const conn = await pool.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    await conn.query(
+      'UPDATE appointments SET status = ? WHERE id = ?',
+      ['REJECTED', id]
+    );
+
+    // mở lại slot để người khác đặt
+    await conn.query(
+      'UPDATE schedules SET is_available = TRUE WHERE id = ?',
+      [appointment.schedule_id]
+    );
+
+    await conn.commit();
+    return res.json({ message: 'Appointment rejected' });
+  } catch (err) {
+    await conn.rollback();
+    return res.status(400).json({ error: err });
+  } finally {
+    conn.release();
+  }
+};
+
+/**
+ * PUT /api/v1/appointments/:id/complete
+ * Doctor hoàn thành khám
+ */
+exports.complete = async (req, res) => {
+  const { id } = req.params;
+  const doctorId = req.user.doctorId;
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) return res.status(404).json({ error: 'Appointment not found' });
+
+  if (doctorId && appointment.doctor_id !== doctorId) {
+    return res.status(403).json({ error: 'Not your appointment' });
+  }
+
+  // Thường chỉ complete khi confirmed
+  if (appointment.status !== 'CONFIRMED') {
+    return res.status(400).json({ error: `Cannot complete when status is ${appointment.status}` });
+  }
+
+  await Appointment.updateStatus(id, 'COMPLETED');
+  return res.json({ message: 'Appointment completed' });
+};
+
+/**
+ * (Optional) GET /api/v1/appointments/me
+ * - Nếu role PATIENT: trả lịch của patient
+ * - Nếu role DOCTOR: trả lịch của doctor
+ */
+exports.getMyAppointments = async (req, res) => {
+  const { role, patientId, doctorId } = req.user;
+
+  if (role === 'PATIENT') {
+    const rows = await Appointment.findByPatientId(patientId);
+    return res.json(rows);
+  }
+
+  if (role === 'DOCTOR') {
+    const rows = await Appointment.findByDoctorId(doctorId);
+    return res.json(rows);
+  }
+
+  return res.status(403).json({ error: 'Role not supported' });
 };
