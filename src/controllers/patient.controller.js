@@ -45,7 +45,6 @@ exports.getMe = async (req, res) => {
 // - patients: dateOfBirth, gender, medicalHistory
 // Dùng transaction để tránh update nửa chừng
 //
-// NOTE: mình đổi sang kiểu PATCH:
 // - field nào không gửi -> giữ nguyên (không set null hết)
 //======================================
 exports.updateMe = async (req, res) => {
@@ -94,8 +93,7 @@ exports.updateMe = async (req, res) => {
       [nextName ?? null, nextPhone ?? null, userId]
     );
 
-    // 2) nếu chưa có record patients -> tạo mới (auto-create cho tiện)
-    // nếu bạn muốn strict: thì return 404 thay vì tạo
+    // 2) nếu chưa có record patients -> tạo mới 
     if (!current.patientId) {
       await conn.query(
         `INSERT INTO patients (id, user_id, date_of_birth, gender, medical_history)
@@ -124,7 +122,7 @@ exports.updateMe = async (req, res) => {
 
     await conn.commit();
 
-    // trả về profile mới cho tiện test
+    // trả về profile mới 
     const profile = await Patient.getProfileByUserId(userId);
     res.json({ message: 'Updated', profile });
   } catch (err) {

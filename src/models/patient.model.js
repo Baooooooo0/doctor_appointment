@@ -95,7 +95,7 @@ exports.getProfileByPatientId = async (patientId) => {
 };
 
 //======================================
-// (NEW) CREATE patient (không cần transaction) - dùng nếu bạn muốn auto-create
+// (NEW) CREATE patient (không cần transaction) 
 //======================================
 exports.create = async (patient) => {
   await pool.query(
