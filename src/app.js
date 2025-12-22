@@ -35,4 +35,7 @@ app.use('/api/v1/reviews', require('./routes/review.routes'));
 // Notifications API
 app.use('/api/v1/notifications', require('./routes/notification.routes'));
 
+// Test API (for Flutter connectivity)
+app.use('/test', require('./routes/test.routes'));
+
 module.exports = app;
