@@ -76,3 +76,54 @@ exports.findAvailableByDate = async (date) => {
   );
   return rows;
 };
+
+// Lấy profile doctor đang login
+// userId lấy từ JWT (req.user.id)
+exports.findMe = async (userId) => {
+  const [rows] = await pool.query(
+    `
+    SELECT 
+      d.id AS doctorId,
+      d.specialty,
+      d.experience_years AS experienceYears,
+      d.description,
+      d.rating,
+      d.user_id AS userId,
+      u.name,
+      u.email,
+      u.phone,
+      d.created_at AS createdAt
+    FROM doctors d
+    JOIN users u ON u.id = d.user_id
+    WHERE d.user_id = ?
+    LIMIT 1
+    `,
+    [userId]
+  );
+
+  return rows[0] || null;
+};
+
+// Update profile doctor đang login (optional fields)
+exports.updateMe = async (userId, { specialty, experienceYears, description }) => {
+  // lấy current để giữ giá trị cũ nếu field không gửi
+  const current = await exports.findMe(userId);
+  if (!current) return null;
+
+  const newSpecialty = specialty ?? current.specialty;
+  const newExperienceYears =
+    experienceYears ?? current.experienceYears ?? 0;
+  const newDescription = description ?? current.description;
+
+  await pool.query(
+    `
+    UPDATE doctors
+    SET specialty = ?, experience_years = ?, description = ?
+    WHERE user_id = ?
+    `,
+    [newSpecialty, newExperienceYears, newDescription, userId]
+  );
+
+  return await exports.findMe(userId);
+};
+

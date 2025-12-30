@@ -31,3 +31,41 @@ exports.getAvailableByDate = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+// GET /api/v1/doctors/me
+exports.getMe = async (req, res) => {
+  try {
+    const userId = req.user.id; // từ JWT middleware
+
+    const doctor = await Doctor.findMe(userId);
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor profile not found' });
+    }
+
+    res.json(doctor);
+  } catch (err) {
+    console.error('GET DOCTOR ME ERROR:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// PUT /api/v1/doctors/me
+exports.updateMe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const { specialty, experienceYears, description } = req.body;
+
+    const updated = await Doctor.updateMe(userId, {
+      specialty,
+      experienceYears,
+      description,
+    });
+
+    res.json({ message: 'Updated', doctor: updated });
+  } catch (err) {
+    console.error('UPDATE DOCTOR ME ERROR:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+

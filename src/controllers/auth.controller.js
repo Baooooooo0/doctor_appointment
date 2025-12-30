@@ -106,7 +106,14 @@ exports.register = async (req, res) => {
       //chỉ commit khi user hoặc profile tạo thành công
       await conn.commit();
 
-      res.status(201).json({ message: 'Register success' }); // trả về 201 created
+      const payload = { id: userId, role };
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+      return res.status(201).json({
+        token,
+        user: { id: userId, name, email, role }
+      });
+
     } catch (err) {
       await conn.rollback(); // nếu register thất bại thì rollback (tạo user hoặc patient/doctor fail)
       console.error('REGISTER TRANSACTION ERROR:', err);
@@ -168,7 +175,7 @@ exports.login = async (req, res) => {
 
     // 5. create token payload
     const payload = {
-      userId: user.id,
+      id: user.id,    
       role: user.role,
       patientId,
       doctorId
