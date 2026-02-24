@@ -22,7 +22,8 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        // Nếu request đặt skipAuthRedirect: true thì KHÔNG redirect (dùng khi test 401 có chủ ý)
+        if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
             // Token hết hạn hoặc không hợp lệ → xóa và về login
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');

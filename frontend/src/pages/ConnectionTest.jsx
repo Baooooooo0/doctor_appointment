@@ -35,7 +35,7 @@ export default function ConnectionTest() {
 
         // Test 3: POST /auth/login với sai credentials → phải trả 401
         try {
-            await api.post('/auth/login', { email: 'nobody@x.com', password: 'wrong' });
+            await api.post('/auth/login', { email: 'nobody@x.com', password: 'wrong' }, { skipAuthRedirect: true });
             addResult('POST /auth/login (wrong creds)', 'UNEXPECTED 200', '');
         } catch (e) {
             if (e.response?.status === 401) {
@@ -47,7 +47,7 @@ export default function ConnectionTest() {
 
         // Test 4: Protected route → 401 without token
         try {
-            await api.get('/appointments/me');
+            await api.get('/appointments/me', { skipAuthRedirect: true });
             addResult('GET /appointments/me (no token)', 'UNEXPECTED 200', '');
         } catch (e) {
             if (e.response?.status === 401) {
