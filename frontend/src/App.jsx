@@ -3,6 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ConnectionTest from './pages/ConnectionTest';
 import AuthPage from './pages/auth/AuthPage';
+import DashboardLayout from './components/layout/DashboardLayout';
+import PatientDashboard from './pages/patient/PatientDashboard';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
 const Placeholder = ({ title }) => {
@@ -80,7 +82,9 @@ function AppRoutes() {
       {/* Patient */}
       <Route path="/patient/dashboard" element={
         <ProtectedRoute allowedRoles={['PATIENT']}>
-          <Placeholder title="Patient Dashboard" />
+          <DashboardLayout>
+            <PatientDashboard />
+          </DashboardLayout>
         </ProtectedRoute>
       } />
       <Route path="/patient/appointments" element={
