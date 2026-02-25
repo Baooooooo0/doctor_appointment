@@ -1,15 +1,49 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ConnectionTest from './pages/ConnectionTest';
+import AuthPage from './pages/auth/AuthPage';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
-const Placeholder = ({ title }) => (
-  <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
-    <h2>🚧 {title}</h2>
-    <p>Page đang được xây dựng...</p>
-  </div>
-);
+const Placeholder = ({ title }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  return (
+    <div style={{ padding: 40, fontFamily: 'Inter, sans-serif', maxWidth: 480 }}>
+      <h2 style={{ marginBottom: 8 }}>🚧 {title}</h2>
+      <p style={{ color: '#6b7280', marginBottom: 24 }}>Page đang được xây dựng...</p>
+
+      {/* Hiện thông tin user đang login để test */}
+      {user && (
+        <div style={{
+          background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10,
+          padding: '14px 18px', marginBottom: 20, fontSize: 14
+        }}>
+          <div style={{ fontWeight: 600, marginBottom: 6, color: '#166534' }}>✅ Đăng nhập thành công</div>
+          <div><b>Tên:</b> {user.name}</div>
+          <div><b>Email:</b> {user.email}</div>
+          <div><b>Role:</b> <code style={{ background: '#dcfce7', padding: '1px 6px', borderRadius: 4 }}>{user.role}</code></div>
+        </div>
+      )}
+
+      <button
+        onClick={handleLogout}
+        style={{
+          padding: '9px 20px', background: '#ef4444', color: '#fff',
+          border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14
+        }}
+      >
+        🚪 Đăng xuất &amp; quay về /login
+      </button>
+    </div>
+  );
+};
 
 // ─── Protected Route ──────────────────────────────────────────────────────────
 function ProtectedRoute({ children, allowedRoles }) {
@@ -40,7 +74,7 @@ function AppRoutes() {
       <Route path="/doctors" element={<Placeholder title="Search Doctors" />} />
       <Route path="/doctors/:id" element={<Placeholder title="Doctor Detail & Booking" />} />
       <Route path="/login" element={
-        <PublicRoute><Placeholder title="Login / Register" /></PublicRoute>
+        <PublicRoute><AuthPage /></PublicRoute>
       } />
 
       {/* Patient */}
