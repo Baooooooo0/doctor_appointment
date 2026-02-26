@@ -5,6 +5,7 @@ import ConnectionTest from './pages/ConnectionTest';
 import AuthPage from './pages/auth/AuthPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import PatientDashboard from './pages/patient/PatientDashboard';
+import DoctorSearchPage from './pages/patient/DoctorSearchPage';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
 const Placeholder = ({ title }) => {
@@ -73,13 +74,19 @@ function AppRoutes() {
       {/* Public */}
       <Route path="/" element={<Placeholder title="Healthcare Landing Page" />} />
       <Route path="/test" element={<ConnectionTest />} />
-      <Route path="/doctors" element={<Placeholder title="Search Doctors" />} />
       <Route path="/doctors/:id" element={<Placeholder title="Doctor Detail & Booking" />} />
       <Route path="/login" element={
         <PublicRoute><AuthPage /></PublicRoute>
       } />
 
       {/* Patient */}
+      <Route path="/doctors" element={
+        <ProtectedRoute allowedRoles={['PATIENT']}>
+          <DashboardLayout>
+            <DoctorSearchPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
       <Route path="/patient/dashboard" element={
         <ProtectedRoute allowedRoles={['PATIENT']}>
           <DashboardLayout>
