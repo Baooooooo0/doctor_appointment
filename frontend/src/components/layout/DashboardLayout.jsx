@@ -14,13 +14,9 @@ const MENU_CONFIG = {
             { label: 'Dashboard', icon: LayoutDashboard, path: '/patient/dashboard' },
             { label: 'Search Doctors', icon: Search, path: '/doctors' },
             { label: 'My Appointments', icon: Calendar, path: '/patient/appointments' },
-            { label: 'Messages', icon: MessageSquare, path: '/messages', badge: 2 },
-            { label: 'Medical History', icon: Clock, path: '/patient/history' },
         ],
         settings: [
             { label: 'Profile', icon: User, path: '/profile' },
-            { label: 'Billing', icon: CreditCard, path: '/billing' },
-            { label: 'Help & Support', icon: HelpCircle, path: '/support' },
         ]
     },
     DOCTOR: {
@@ -28,11 +24,9 @@ const MENU_CONFIG = {
             { label: 'Dashboard', icon: LayoutDashboard, path: '/doctor/dashboard' },
             { label: 'My Schedule', icon: Calendar, path: '/doctor/schedules' },
             { label: 'Patients', icon: Users, path: '/doctor/patients' },
-            { label: 'Messages', icon: MessageSquare, path: '/messages', badge: 5 },
         ],
         settings: [
             { label: 'Profile', icon: User, path: '/profile' },
-            { label: 'Help & Support', icon: HelpCircle, path: '/support' },
         ]
     },
     ADMIN: {
@@ -101,13 +95,7 @@ export default function DashboardLayout({ children }) {
                         </nav>
                     </div>
 
-                    {/* Pro Plan Card */}
-                    <div className="pro-plan-card">
-                        <div className="pro-icon">★</div>
-                        <div className="pro-title">Pro Plan</div>
-                        <p className="pro-desc">Get priority support and advanced health analytics.</p>
-                        <button className="btn-upgrade">Upgrade Now</button>
-                    </div>
+
                 </div>
             </aside>
 

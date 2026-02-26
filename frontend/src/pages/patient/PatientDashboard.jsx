@@ -25,36 +25,36 @@ export default function PatientDashboard() {
                         <div className="stat-card">
                             <div className="stat-icon bg-blue-light text-blue"><Calendar size={20} /></div>
                             <div className="stat-info">
-                                <div className="stat-label">Appointments</div>
+                                <div className="stat-label">Total Appointments</div>
+                                <div className="stat-value">5</div>
+                                <div className="stat-subtext text-gray">All time</div>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon bg-orange-light text-orange"><Activity size={20} /></div>
+                            <div className="stat-info">
+                                <div className="stat-label">Upcoming</div>
                                 <div className="stat-value">2</div>
-                                <div className="stat-subtext text-green">+1 this week</div>
+                                <div className="stat-subtext text-orange">Pending/Confirmed</div>
                             </div>
                         </div>
 
                         <div className="stat-card">
-                            <div className="stat-icon bg-purple-light text-purple"><Activity size={20} /></div>
+                            <div className="stat-icon bg-green-light text-green"><Calendar size={20} /></div>
                             <div className="stat-info">
-                                <div className="stat-label">Heart Rate</div>
-                                <div className="stat-value">72 <span className="text-sm">bpm</span></div>
-                                <div className="stat-subtext">Normal range</div>
+                                <div className="stat-label">Completed</div>
+                                <div className="stat-value">2</div>
+                                <div className="stat-subtext text-green">Successfully past</div>
                             </div>
                         </div>
 
                         <div className="stat-card">
-                            <div className="stat-icon bg-orange-light text-orange"><Weight size={20} /></div>
+                            <div className="stat-icon bg-purple-light text-purple"><Search size={20} /></div>
                             <div className="stat-info">
-                                <div className="stat-label">Weight</div>
-                                <div className="stat-value">68 <span className="text-sm">kg</span></div>
-                                <div className="stat-subtext text-red">-2kg since last visit</div>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon bg-green-light text-green"><Droplets size={20} /></div>
-                            <div className="stat-info">
-                                <div className="stat-label">Blood Pressure</div>
-                                <div className="stat-value">120/80</div>
-                                <div className="stat-subtext">Last check: 2d ago</div>
+                                <div className="stat-label">Cancelled</div>
+                                <div className="stat-value">1</div>
+                                <div className="stat-subtext text-red">Missed/Cancelled</div>
                             </div>
                         </div>
                     </div>
@@ -81,8 +81,8 @@ export default function PatientDashboard() {
                                     </div>
                                 </div>
                                 <div className="appt-footer">
-                                    <button className="btn btn-primary"><Video size={16} /> Join Video Call</button>
-                                    <button className="btn btn-outline">Reschedule</button>
+                                    <button className="btn btn-primary">View Details</button>
+                                    <button className="btn btn-outline text-red" style={{ borderColor: '#fecaca', color: '#b91c1c' }}>Cancel</button>
                                 </div>
                             </div>
 
@@ -106,10 +106,10 @@ export default function PatientDashboard() {
                         </div>
                     </section>
 
-                    {/* Top Doctors Nearby */}
+                    {/* Available Doctors */}
                     <section className="dashboard-section">
                         <div className="section-header">
-                            <h3>Top Doctors Nearby</h3>
+                            <h3>Available Doctors</h3>
                         </div>
                         <div className="doctors-grid">
                             <div className="card mini-doc-card">
@@ -136,29 +136,10 @@ export default function PatientDashboard() {
                 {/* ── Right Column ── */}
                 <div className="side-col">
 
-                    {/* Find Specialist Card */}
-                    <div className="search-specialist-card">
-                        <h3>Find a Specialist</h3>
-                        <p>Search for doctors, clinics, or specific treatments.</p>
-
-                        <div className="search-inputs">
-                            <div className="input-with-icon">
-                                <Search size={16} className="input-icon" />
-                                <input type="text" placeholder="Condition, procedure..." />
-                            </div>
-                            <div className="input-with-icon">
-                                <MapPin size={16} />
-                                <input type="text" placeholder="Location (City, Zip)" />
-                            </div>
-                        </div>
-
-                        <button className="btn btn-dark-full">Search Now</button>
-                    </div>
-
-                    {/* Recent Activity */}
+                    {/* Recent Notifications */}
                     <div className="card recent-activity-card">
                         <div className="section-header">
-                            <h3>Recent Activity</h3>
+                            <h3>Recent Notifications</h3>
                             <a href="#" className="link-view-all text-xs">Mark all read</a>
                         </div>
 
@@ -166,8 +147,8 @@ export default function PatientDashboard() {
                             <div className="activity-item">
                                 <div className="activity-dot bg-blue"></div>
                                 <div className="activity-content">
-                                    <h4>Lab results available</h4>
-                                    <p>Your blood test results from Oct 20 are ready.</p>
+                                    <h4>Appointment Confirmed</h4>
+                                    <p>Your appointment with Dr. Sarah Smith has been confirmed.</p>
                                     <span className="activity-time">2 hours ago</span>
                                 </div>
                             </div>
@@ -176,7 +157,7 @@ export default function PatientDashboard() {
                                 <div className="activity-dot bg-gray"></div>
                                 <div className="activity-content">
                                     <h4>Appointment Reminder</h4>
-                                    <p>Don't forget your checkup with Dr. Smith tomorrow.</p>
+                                    <p>Don't forget your scheduled visit tomorrow.</p>
                                     <span className="activity-time">Yesterday</span>
                                 </div>
                             </div>
@@ -184,25 +165,16 @@ export default function PatientDashboard() {
                             <div className="activity-item">
                                 <div className="activity-dot bg-gray"></div>
                                 <div className="activity-content">
-                                    <h4>Prescription Renewed</h4>
-                                    <p>Pharmacy has received your renewal request.</p>
+                                    <h4>System Notice</h4>
+                                    <p>Welcome to HealthPlus! Complete your profile.</p>
                                     <span className="activity-time">Oct 19</span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="card-footer-center">
-                            <a href="#" className="link-view-all">View All Activity</a>
+                            <a href="#" className="link-view-all">View All Notifications</a>
                         </div>
-                    </div>
-
-                    {/* Health Tip */}
-                    <div className="health-tip-card">
-                        <div className="tip-header">
-                            <Leaf size={16} className="text-green" />
-                            <h4>Health Tip</h4>
-                        </div>
-                        <p>"Drinking water before meals can help you feel fuller and aid in weight management."</p>
                     </div>
 
                 </div>
