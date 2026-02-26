@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, Filter, Calendar } from 'lucide-react';
 import api from '../../api/axios';
 import './DoctorSearchPage.css';
@@ -144,8 +145,22 @@ export default function DoctorSearchPage() {
                                     </div>
                                 </div>
                                 <div className="doctor-card-footer">
-                                    <button className="btn btn-outline-primary btn-block">View Profile</button>
-                                    <button className="btn btn-primary btn-block">Book Appt</button>
+                                    <Link
+                                        to={`/doctors/${doctor.id || doctor.doctorId}`}
+                                        state={{ doctor }}
+                                        className="btn btn-outline-primary btn-block text-center"
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        View Profile
+                                    </Link>
+                                    <Link
+                                        to={`/doctors/${doctor.id || doctor.doctorId}`}
+                                        state={{ doctor }}
+                                        className="btn btn-primary btn-block text-center"
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        Book Appt
+                                    </Link>
                                 </div>
                             </div>
                         ))}
