@@ -7,6 +7,7 @@ import DashboardLayout from './components/layout/DashboardLayout';
 import PatientDashboard from './pages/patient/PatientDashboard';
 import DoctorSearchPage from './pages/patient/DoctorSearchPage';
 import DoctorDetailPage from './pages/patient/DoctorDetailPage';
+import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
 const Placeholder = ({ title }) => {
@@ -103,7 +104,9 @@ function AppRoutes() {
       } />
       <Route path="/patient/appointments" element={
         <ProtectedRoute allowedRoles={['PATIENT']}>
-          <Placeholder title="My Appointments" />
+          <DashboardLayout>
+            <MyAppointmentsPage />
+          </DashboardLayout>
         </ProtectedRoute>
       } />
 

@@ -1,0 +1,326 @@
+.appt-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.appt-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.appt-page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.appt-page-header p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* ── Status Tabs ── */
+.status-tabs {
+    display: flex;
+    gap: 6px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 6px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.status-tabs::-webkit-scrollbar {
+    height: 3px;
+}
+
+.status-tabs::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: none;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.tab-btn.active {
+    background: #136dec;
+    color: white;
+}
+
+.tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.tab-btn:not(.active) .tab-count {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+/* ── Loading & Empty ── */
+.appt-loading,
+.appt-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 0;
+    color: #64748b;
+    text-align: center;
+}
+
+.empty-icon {
+    color: #cbd5e1;
+    margin-bottom: 16px;
+}
+
+.appt-empty h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.appt-empty p {
+    font-size: 14px;
+}
+
+/* ── Appointment List ── */
+.appt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.appt-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.appt-card:hover {
+    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.appt-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #136dec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.appt-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.appt-doctor-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.appt-id-text {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+.appt-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.appt-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #475569;
+}
+
+.appt-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ── Status Badges ── */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: #fef9c3;
+    color: #a16207;
+}
+
+.status-confirmed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-rejected {
+    background: #fce7f3;
+    color: #be185d;
+}
+
+/* ── Cancel Button ── */
+.btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid #fca5a5;
+    background: #fff5f5;
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel:hover:not(:disabled) {
+    background: #fee2e2;
+    border-color: #f87171;
+}
+
+.btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Pagination ── */
+.appt-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.page-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Spinner (shared from DoctorSearchPage) */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #136dec;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .appt-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .appt-actions {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
