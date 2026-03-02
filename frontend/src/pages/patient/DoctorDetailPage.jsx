@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, Clock, Star, MapPin, Award, ChevronLeft, Calendar as CalendarWidget } from 'lucide-react';
+import { Star, MapPin, Award, ChevronLeft, Calendar as CalendarIcon, MessageSquare } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import './DoctorDetailPage.css';
@@ -19,6 +19,11 @@ export default function DoctorDetailPage() {
 
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [booking, setBooking] = useState(false);
+
+    // Reviews state
+    const [reviews, setReviews] = useState([]);
+    const [reviewStats, setReviewStats] = useState({ totalReviews: 0, avgRating: null });
+    const [loadingReviews, setLoadingReviews] = useState(false);
 
     // If doctor data not in state, attempt to fetch it (fallback)
     useEffect(() => {
@@ -70,6 +75,26 @@ export default function DoctorDetailPage() {
         }
     }, [doctor, selectedDate]);
 
+    // Fetch reviews when doctor is loaded
+    useEffect(() => {
+        if (doctor) {
+            const fetchReviews = async () => {
+                setLoadingReviews(true);
+                try {
+                    const docId = doctor.id || doctor.doctorId;
+                    const res = await api.get(`/reviews/doctor/${docId}`);
+                    setReviews(res.data.reviews || []);
+                    setReviewStats(res.data.stats || { totalReviews: 0, avgRating: null });
+                } catch (error) {
+                    console.error('Error fetching reviews:', error);
+                } finally {
+                    setLoadingReviews(false);
+                }
+            };
+            fetchReviews();
+        }
+    }, [doctor]);
+
     // Handle Book
     const handleBookAppointment = async () => {
         if (!selectedSlot) return;
@@ -87,6 +112,17 @@ export default function DoctorDetailPage() {
         } finally {
             setBooking(false);
         }
+    };
+
+    // Relative time helper
+    const timeAgo = (dateStr) => {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const days = Math.floor(diff / 86400000);
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        if (days < 30) return `${days} days ago`;
+        const months = Math.floor(days / 30);
+        return `${months} month${months > 1 ? 's' : ''} ago`;
     };
 
     // Date formatting helper
@@ -180,6 +216,57 @@ export default function DoctorDetailPage() {
                             <h3>About Doctor</h3>
                             <p>{doctor.description || "An experienced professional dedicated to providing the best healthcare services."}</p>
                         </div>
+                    </div>
+
+                    {/* ── Reviews Section ── */}
+                    <div className="card reviews-card">
+                        <div className="reviews-header">
+                            <div className="reviews-title-row">
+                                <MessageSquare size={20} className="text-blue" />
+                                <h3>Patient Reviews</h3>
+                            </div>
+                            {reviewStats.totalReviews > 0 && (
+                                <div className="reviews-stats">
+                                    <span className="avg-rating-big">
+                                        <Star size={18} className="star-icon" />
+                                        {reviewStats.avgRating?.toFixed(1)}
+                                    </span>
+                                    <span className="total-reviews-text">{reviewStats.totalReviews} review{reviewStats.totalReviews > 1 ? 's' : ''}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {loadingReviews ? (
+                            <div className="spinner-sm-container"><div className="spinner spinner-sm"></div></div>
+                        ) : reviews.length === 0 ? (
+                            <div className="no-reviews">
+                                <p>No reviews yet. Be the first to leave one after your appointment!</p>
+                            </div>
+                        ) : (
+                            <div className="reviews-list">
+                                {reviews.map(review => (
+                                    <div className="review-item" key={review.id}>
+                                        <div className="review-item-header">
+                                            <div className="review-avatar">
+                                                {(review.patient_id || 'P').slice(0, 1).toUpperCase()}
+                                            </div>
+                                            <div className="review-meta">
+                                                <span className="reviewer-name">Patient</span>
+                                                <span className="review-date">{timeAgo(review.created_at)}</span>
+                                            </div>
+                                            <div className="review-stars">
+                                                {[1,2,3,4,5].map(s => (
+                                                    <Star key={s} size={14} className={s <= review.rating ? 'star-filled' : 'star-empty'} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        {review.comment && (
+                                            <p className="review-comment">{review.comment}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
