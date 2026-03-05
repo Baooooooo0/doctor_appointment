@@ -1,115 +1,108 @@
-.appt-page {
+.appointments-page {
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 24px;
 }
 
-.appt-page-header {
+/* ── Header ── */
+.page-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
+    gap: 16px;
 }
 
-.appt-page-header h1 {
-    font-size: 22px;
+.page-header h1 {
+    font-size: 24px;
     font-weight: 700;
     color: #0f172a;
     margin-bottom: 4px;
 }
 
-.appt-page-header p {
+.page-header p {
     font-size: 14px;
     color: #64748b;
+}
+
+.total-badge {
+    background: #eff6ff;
+    color: #136dec;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 
 /* ── Status Tabs ── */
 .status-tabs {
     display: flex;
-    gap: 6px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 6px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    flex-shrink: 0;
-}
-
-.status-tabs::-webkit-scrollbar {
-    height: 3px;
-}
-
-.status-tabs::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0;
 }
 
 .tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 7px;
-    border: none;
-    background: none;
-    font-size: 13px;
+    padding: 10px 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #64748b;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
     transition: all 0.2s;
-    white-space: nowrap;
+    margin-bottom: -1px;
 }
 
 .tab-btn:hover {
-    background: #f1f5f9;
-    color: #0f172a;
+    color: #136dec;
 }
 
 .tab-btn.active {
-    background: #136dec;
-    color: white;
+    color: #136dec;
+    border-bottom-color: #136dec;
 }
 
-.tab-count {
-    background: rgba(255, 255, 255, 0.25);
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.tab-btn:not(.active) .tab-count {
-    background: #e2e8f0;
-    color: #64748b;
-}
-
-/* ── Loading & Empty ── */
+/* ── Loading / Empty ── */
 .appt-loading,
 .appt-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 64px 0;
+    padding: 80px 0;
     color: #64748b;
     text-align: center;
+    gap: 12px;
 }
 
-.empty-icon {
-    color: #cbd5e1;
-    margin-bottom: 16px;
-}
-
-.appt-empty h2 {
+.appt-empty h3 {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     color: #0f172a;
-    margin-bottom: 8px;
 }
 
 .appt-empty p {
     font-size: 14px;
+    color: #94a3b8;
+}
+
+.empty-icon {
+    color: #cbd5e1;
+}
+
+.spin-icon {
+    animation: spin 1s linear infinite;
+    color: #136dec;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ── Appointment List ── */
@@ -117,28 +110,36 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-bottom: 24px;
 }
 
 .appt-card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
     transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .appt-card:hover {
-    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     transform: translateY(-1px);
 }
 
-.appt-avatar {
-    width: 52px;
-    height: 52px;
+.appt-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.doctor-avatar-sm {
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     background: #eff6ff;
     color: #136dec;
@@ -149,28 +150,24 @@
 }
 
 .appt-info {
-    flex: 1;
     min-width: 0;
 }
 
-.appt-doctor-name {
-    font-size: 16px;
+.appt-info h3 {
+    font-size: 15px;
     font-weight: 700;
     color: #0f172a;
-    margin-bottom: 4px;
-}
-
-.appt-id-text {
-    font-size: 12px;
-    color: #94a3b8;
-    margin-bottom: 10px;
-    font-family: monospace;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .appt-meta-row {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .appt-meta-item {
@@ -178,108 +175,109 @@
     align-items: center;
     gap: 5px;
     font-size: 13px;
-    color: #475569;
+    color: #64748b;
 }
 
-.appt-actions {
+/* ── Right Side (Status + Actions) ── */
+.appt-card-right {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     flex-shrink: 0;
 }
 
 /* ── Status Badges ── */
 .status-badge {
-    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .status-pending {
     background: #fef9c3;
-    color: #a16207;
+    color: #854d0e;
 }
 
 .status-confirmed {
     background: #dbeafe;
-    color: #1d4ed8;
+    color: #1e40af;
 }
 
 .status-completed {
     background: #dcfce7;
-    color: #15803d;
+    color: #166534;
 }
 
 .status-cancelled {
-    background: #fee2e2;
-    color: #b91c1c;
+    background: #f1f5f9;
+    color: #475569;
 }
 
 .status-rejected {
-    background: #fce7f3;
-    color: #be185d;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 /* ── Cancel Button ── */
-.btn-cancel {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 8px;
+.btn-cancel-appt {
+    padding: 8px 16px;
+    background: white;
     border: 1px solid #fca5a5;
-    background: #fff5f5;
-    color: #b91c1c;
+    border-radius: 8px;
+    color: #dc2626;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.btn-cancel:hover:not(:disabled) {
+.btn-cancel-appt:hover:not(:disabled) {
     background: #fee2e2;
-    border-color: #f87171;
+    border-color: #dc2626;
 }
 
-.btn-cancel:disabled {
-    opacity: 0.5;
+.btn-cancel-appt:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
 /* ── Pagination ── */
-.appt-pagination {
+.pagination {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 16px;
+    padding-top: 8px;
 }
 
-.page-btn {
+.btn-page {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
     background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: #475569;
+    color: #0f172a;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.page-btn:hover:not(:disabled) {
+.btn-page:hover:not(:disabled) {
     background: #f8fafc;
-    border-color: #94a3b8;
+    border-color: #136dec;
+    color: #136dec;
 }
 
-.page-btn:disabled {
-    opacity: 0.5;
+.btn-page:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
@@ -289,27 +287,6 @@
     font-weight: 500;
 }
 
-/* Spinner (shared from DoctorSearchPage) */
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #136dec;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 16px;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .appt-card {
@@ -317,10 +294,17 @@
         align-items: flex-start;
     }
 
-    .appt-actions {
-        flex-direction: row;
-        align-items: center;
+    .appt-card-right {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .status-tabs {
+        gap: 4px;
+    }
+
+    .tab-btn {
+        padding: 8px 12px;
+        font-size: 13px;
     }
 }
