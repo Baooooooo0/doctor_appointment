@@ -100,7 +100,17 @@ exports.createAppointment = async (req, res) => {
      */
     await conn.rollback();
 
-    return res.status(400).json({ error: err });
+    // Map lỗi sang thông báo thân thiện
+    if (typeof err === 'string') {
+      // String throw từ validation bên trên (vd: 'Schedule not available')
+      return res.status(400).json({ error: err });
+    }
+    if (err?.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'This slot has already been booked. Please choose another slot.' });
+    }
+    // Lỗi DB khác -> log nội bộ, không expose ra ngoài
+    console.error('CREATE APPOINTMENT ERROR:', err);
+    return res.status(500).json({ error: 'An unexpected error occurred. Please try again.' });
   } finally {
     conn.release();
   }

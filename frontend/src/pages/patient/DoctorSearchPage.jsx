@@ -146,7 +146,7 @@ export default function DoctorSearchPage() {
                                 </div>
                                 <div className="doctor-card-footer">
                                     <Link
-                                        to={`/doctors/${doctor.id || doctor.doctorId}`}
+                                        to={`/doctors/${encodeURIComponent(doctor.doctorId || doctor.id)}`}
                                         state={{ doctor }}
                                         className="btn btn-outline-primary btn-block text-center"
                                         style={{ textDecoration: 'none' }}
@@ -154,7 +154,7 @@ export default function DoctorSearchPage() {
                                         View Profile
                                     </Link>
                                     <Link
-                                        to={`/doctors/${doctor.id || doctor.doctorId}`}
+                                        to={`/doctors/${encodeURIComponent(doctor.doctorId || doctor.id)}`}
                                         state={{ doctor }}
                                         className="btn btn-primary btn-block text-center"
                                         style={{ textDecoration: 'none' }}

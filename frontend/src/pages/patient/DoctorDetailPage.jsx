@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 import './DoctorDetailPage.css';
 
 export default function DoctorDetailPage() {
-    const { id } = useParams();
+    const rawId = useParams().id;
+    const id = decodeURIComponent(rawId || '');
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -34,7 +35,7 @@ export default function DoctorDetailPage() {
                     // This is a workaround since backend doesn't have /doctors/:id
                     const res = await api.get('/doctors', { params: { limit: 100 } });
                     const docs = res.data.data || [];
-                    const found = docs.find(d => (d.id || d.doctorId) === id);
+                    const found = docs.find(d => (d.doctorId || d.id) === id);
                     if (found) {
                         setDoctor(found);
                     } else {
@@ -59,7 +60,7 @@ export default function DoctorDetailPage() {
                 setLoadingSchedules(true);
                 setSelectedSlot(null); // Reset selection on date change
                 try {
-                    const docId = doctor.id || doctor.doctorId;
+                    const docId = doctor.doctorId || doctor.id;
                     const res = await api.get('/schedules', {
                         params: { doctorId: docId, date: selectedDate }
                     });
@@ -81,7 +82,7 @@ export default function DoctorDetailPage() {
             const fetchReviews = async () => {
                 setLoadingReviews(true);
                 try {
-                    const docId = doctor.id || doctor.doctorId;
+                    const docId = doctor.doctorId || doctor.id;
                     const res = await api.get(`/reviews/doctor/${docId}`);
                     setReviews(res.data.reviews || []);
                     setReviewStats(res.data.stats || { totalReviews: 0, avgRating: null });
@@ -100,15 +101,25 @@ export default function DoctorDetailPage() {
         if (!selectedSlot) return;
         setBooking(true);
         try {
-            const docId = doctor.id || doctor.doctorId;
+            const docId = doctor.doctorId || doctor.id;
             await api.post('/appointments', {
                 doctorId: docId,
                 scheduleId: selectedSlot.id
             });
-            toast.success("Appointment booked successfully!");
-            navigate('/patient/appointments');
+            toast.success('Appointment booked successfully!');
+            navigate('/patient/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.error || "Booking failed.");
+            // Backend now always returns { error: string } - safe to read directly
+            const raw = error.response?.data?.error;
+            const msg = typeof raw === 'string' ? raw : 'This slot is no longer available. Please choose another.';
+            toast.error(msg);
+            // Refresh slot list so booked slots are removed from the UI
+            const docId = doctor.doctorId || doctor.id;
+            try {
+                const res = await api.get('/schedules', { params: { doctorId: docId, date: selectedDate } });
+                setSchedules(res.data);
+            } catch (_) { /* ignore refresh error */ }
+            setSelectedSlot(null);
         } finally {
             setBooking(false);
         }
