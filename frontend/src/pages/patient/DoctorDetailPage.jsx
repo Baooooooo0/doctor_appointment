@@ -255,7 +255,7 @@ export default function DoctorDetailPage() {
                                                 <span className="review-date">{timeAgo(review.created_at)}</span>
                                             </div>
                                             <div className="review-stars">
-                                                {[1,2,3,4,5].map(s => (
+                                                {[1, 2, 3, 4, 5].map(s => (
                                                     <Star key={s} size={14} className={s <= review.rating ? 'star-filled' : 'star-empty'} />
                                                 ))}
                                             </div>
@@ -303,7 +303,7 @@ export default function DoctorDetailPage() {
                                             className={`slot-btn ${selectedSlot?.id === slot.id ? 'selected' : ''}`}
                                             onClick={() => setSelectedSlot(slot)}
                                         >
-                                            {slot.start_time.slice(0, 5)} - {slot.end_time.slice(0, 5)}
+                                            {(slot.startTime || slot.start_time || '').slice(0, 5)} - {(slot.endTime || slot.end_time || '').slice(0, 5)}
                                         </button>
                                     ))}
                                 </div>

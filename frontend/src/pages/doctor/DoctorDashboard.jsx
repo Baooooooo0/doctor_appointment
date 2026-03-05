@@ -283,12 +283,12 @@ export default function DoctorDashboard() {
                         ) : (
                             <div className="slots-timeline">
                                 {todaySlots.map(slot => (
-                                    <div className={`slot-item ${slot.is_available ? 'slot-free' : 'slot-busy'}`} key={slot.id}>
+                                    <div className={`slot-item ${slot.isAvailable ? 'slot-free' : 'slot-busy'}`} key={slot.id}>
                                         <div className="slot-dot"></div>
                                         <div className="slot-body">
-                                            <span className="slot-time">{formatTime(slot.start_time)} – {formatTime(slot.end_time)}</span>
-                                            <span className={`slot-badge ${slot.is_available ? 'badge-free' : 'badge-booked'}`}>
-                                                {slot.is_available ? 'Free' : 'Booked'}
+                                            <span className="slot-time">{formatTime(slot.startTime)} – {formatTime(slot.endTime)}</span>
+                                            <span className={`slot-badge ${slot.isAvailable ? 'badge-free' : 'badge-booked'}`}>
+                                                {slot.isAvailable ? 'Free' : 'Booked'}
                                             </span>
                                         </div>
                                     </div>
