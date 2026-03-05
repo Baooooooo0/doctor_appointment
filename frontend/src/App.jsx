@@ -9,6 +9,7 @@ import DoctorSearchPage from './pages/patient/DoctorSearchPage';
 import DoctorDetailPage from './pages/patient/DoctorDetailPage';
 import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import DoctorSchedulePage from './pages/doctor/DoctorSchedulePage';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
 const Placeholder = ({ title }) => {
@@ -121,7 +122,9 @@ function AppRoutes() {
       } />
       <Route path="/doctor/schedules" element={
         <ProtectedRoute allowedRoles={['DOCTOR']}>
-          <Placeholder title="Schedule Manager" />
+          <DashboardLayout>
+            <DoctorSchedulePage />
+          </DashboardLayout>
         </ProtectedRoute>
       } />
 
