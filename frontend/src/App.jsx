@@ -10,6 +10,7 @@ import DoctorDetailPage from './pages/patient/DoctorDetailPage';
 import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorSchedulePage from './pages/doctor/DoctorSchedulePage';
+import ProfileSettingsPage from './pages/shared/ProfileSettingsPage';
 
 // ─── Page placeholders (sẽ thay bằng components thực) ────────────────────────
 const Placeholder = ({ title }) => {
@@ -137,7 +138,11 @@ function AppRoutes() {
 
       {/* Shared */}
       <Route path="/profile" element={
-        <ProtectedRoute><Placeholder title="User Profile" /></ProtectedRoute>
+        <ProtectedRoute>
+          <DashboardLayout>
+            <ProfileSettingsPage />
+          </DashboardLayout>
+        </ProtectedRoute>
       } />
 
       {/* 404 */}

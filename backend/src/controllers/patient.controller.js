@@ -21,7 +21,7 @@ const allowedGenders = ['MALE', 'FEMALE', 'OTHER'];
 //======================================
 exports.getMe = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     // join users + patients để trả về đủ dữ liệu
     const profile = await Patient.getProfileByUserId(userId);
@@ -50,7 +50,7 @@ exports.getMe = async (req, res) => {
 exports.updateMe = async (req, res) => {
   const conn = await pool.getConnection();
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { name, phone, dateOfBirth, gender, medicalHistory } = req.body;
 
     // validate cơ bản
