@@ -112,3 +112,80 @@ exports.getStats = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+/**
+ * GET /api/v1/admin/appointments
+ * Xem tất cả appointments (phân trang + filter status + search)
+ * Query: ?page=1&limit=10&status=PENDING&search=keyword
+ */
+exports.getAllAppointments = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+        const { status, search } = req.query;
+
+        let query = `
+            SELECT 
+                a.id, a.date, a.start_time, a.end_time, a.status, a.created_at,
+                up.name AS patient_name, up.email AS patient_email,
+                ud.name AS doctor_name, ud.email AS doctor_email
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN users up ON p.user_id = up.id
+            LEFT JOIN doctors d ON a.doctor_id = d.id
+            LEFT JOIN users ud ON d.user_id = ud.id
+            WHERE 1=1
+        `;
+        const params = [];
+
+        if (status) {
+            query += ` AND a.status = ?`;
+            params.push(status);
+        }
+
+        if (search) {
+            query += ` AND (up.name LIKE ? OR ud.name LIKE ? OR up.email LIKE ? OR ud.email LIKE ?)`;
+            params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        query += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
+        params.push(limit, offset);
+
+        const [appointments] = await pool.query(query, params);
+
+        // Count
+        let countQuery = `
+            SELECT COUNT(*) AS total
+            FROM appointments a
+            LEFT JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN users up ON p.user_id = up.id
+            LEFT JOIN doctors d ON a.doctor_id = d.id
+            LEFT JOIN users ud ON d.user_id = ud.id
+            WHERE 1=1
+        `;
+        const countParams = [];
+
+        if (status) {
+            countQuery += ` AND a.status = ?`;
+            countParams.push(status);
+        }
+        if (search) {
+            countQuery += ` AND (up.name LIKE ? OR ud.name LIKE ? OR up.email LIKE ? OR ud.email LIKE ?)`;
+            countParams.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        const [[{ total }]] = await pool.query(countQuery, countParams);
+
+        res.json({
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+            appointments
+        });
+    } catch (err) {
+        console.error('GET ALL APPOINTMENTS ERROR:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};

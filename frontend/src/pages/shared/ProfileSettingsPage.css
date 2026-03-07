@@ -186,8 +186,35 @@
 /* ── Save Row ── */
 .ps-save-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     padding-top: 4px;
+    gap: 12px;
+}
+
+.ps-btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: white;
+    color: #dc2626;
+    border: 1.5px solid #fecaca;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.ps-btn-logout:hover {
+    background: #fef2f2;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.ps-btn-logout:active {
+    transform: translateY(0);
 }
 
 .ps-btn-save {
@@ -229,8 +256,13 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ── Responsive ── */

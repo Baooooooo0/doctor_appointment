@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, Shield, Briefcase, Award, FileText, Save, Loader2, Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { User, Mail, Phone, Calendar, Shield, Briefcase, Award, FileText, Save, Loader2, Heart, LogOut } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import './ProfileSettingsPage.css';
 
 export default function ProfileSettingsPage() {
-    const { user, role } = useAuth();
+    const { user, role, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -279,8 +286,11 @@ export default function ProfileSettingsPage() {
                     </div>
                 )}
 
-                {/* ── Save Button ── */}
+                {/* ── Save & Logout ── */}
                 <div className="ps-save-row">
+                    <button type="button" className="ps-btn-logout" onClick={handleLogout}>
+                        <LogOut size={16} /> Log Out
+                    </button>
                     <button type="submit" className="ps-btn-save" disabled={saving}>
                         {saving ? (
                             <><Loader2 size={16} className="spin-icon" /> Saving...</>

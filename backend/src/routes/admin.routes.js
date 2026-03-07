@@ -15,4 +15,7 @@ router.put('/users/:id/lock', controller.toggleUserLock);
 // Thống kê
 router.get('/stats', controller.getStats);
 
+// Xem tất cả appointments
+router.get('/appointments', controller.getAllAppointments);
+
 module.exports = router;
