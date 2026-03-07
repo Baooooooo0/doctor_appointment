@@ -77,15 +77,19 @@ exports.countByDoctorId = async (doctorId, status = null) => {
 
 // status là optional – nếu truyền vào thì filter thêm theo status
 exports.findByPatientId = async (patientId, status = null, limit = 10, offset = 0) => {
-  let sql = 'SELECT * FROM appointments WHERE patient_id = ?';
+  let sql = `SELECT a.*, u.name AS doctor_name, d.specialty AS doctor_specialty
+     FROM appointments a
+     LEFT JOIN doctors d ON a.doctor_id = d.id
+     LEFT JOIN users u ON d.user_id = u.id
+     WHERE a.patient_id = ?`;
   const params = [patientId];
 
   if (status) {
-    sql += ' AND status = ?';
+    sql += ' AND a.status = ?';
     params.push(status);
   }
 
-  sql += ' ORDER BY date DESC, start_time DESC LIMIT ? OFFSET ?';
+  sql += ' ORDER BY a.date DESC, a.start_time DESC LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
   const [rows] = await pool.query(sql, params);
