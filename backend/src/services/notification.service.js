@@ -52,8 +52,8 @@ exports.onAppointmentCreated = async ({ doctorId, date, startTime }) => {
     if (!userId) return;
     await notify(
         userId,
-        '📅 Lịch hẹn mới',
-        `Bạn có lịch hẹn mới vào ${date} lúc ${startTime}. Vui lòng xác nhận.`
+        '📅 New Appointment',
+        `You have a new appointment on ${date} at ${startTime}. Please confirm.`
     );
 };
 
@@ -65,8 +65,8 @@ exports.onAppointmentConfirmed = async ({ patientId, date, startTime }) => {
     if (!userId) return;
     await notify(
         userId,
-        '✅ Lịch hẹn đã được xác nhận',
-        `Lịch hẹn ngày ${date} lúc ${startTime} đã được bác sĩ xác nhận.`
+        '✅ Appointment Confirmed',
+        `Your appointment on ${date} at ${startTime} has been confirmed by the doctor.`
     );
 };
 
@@ -78,8 +78,8 @@ exports.onAppointmentRejected = async ({ patientId, date, startTime }) => {
     if (!userId) return;
     await notify(
         userId,
-        '❌ Lịch hẹn bị từ chối',
-        `Lịch hẹn ngày ${date} lúc ${startTime} đã bị từ chối. Vui lòng đặt lại.`
+        '❌ Appointment Rejected',
+        `Your appointment on ${date} at ${startTime} has been rejected. Please re-book.`
     );
 };
 
@@ -91,8 +91,8 @@ exports.onAppointmentCompleted = async ({ patientId, date }) => {
     if (!userId) return;
     await notify(
         userId,
-        '🩺 Khám hoàn thành',
-        `Buổi khám ngày ${date} đã hoàn thành. Hãy để lại đánh giá cho bác sĩ nhé!`
+        '🩺 Appointment Completed',
+        `Your appointment on ${date} has been completed. Please leave a review for the doctor!`
     );
 };
 
@@ -104,7 +104,7 @@ exports.onAppointmentCancelled = async ({ doctorId, date, startTime }) => {
     if (!userId) return;
     await notify(
         userId,
-        '🚫 Lịch hẹn bị huỷ',
-        `Bệnh nhân đã huỷ lịch hẹn ngày ${date} lúc ${startTime}. Slot đã mở lại.`
+        '🚫 Appointment Cancelled',
+        `The patient has cancelled the appointment on ${date} at ${startTime}. The slot has reopened.`
     );
 };

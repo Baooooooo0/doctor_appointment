@@ -39,18 +39,18 @@ function LoginForm({ onSwitchToRegister }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!form.email || !form.password) { setError('Vui lòng điền đầy đủ thông tin.'); return; }
+        if (!form.email || !form.password) { setError('Please fill in all details.'); return; }
         setLoading(true);
         try {
             const res = await apiLogin({ email: form.email, password: form.password });
             login(res.data);
-            toast.success('Đăng nhập thành công!');
+            toast.success('Login successful!');
             const role = res.data.user?.role;
             if (role === 'DOCTOR') navigate('/doctor/dashboard');
             else if (role === 'ADMIN') navigate('/admin/dashboard');
             else navigate('/patient/dashboard');
         } catch (err) {
-            const msg = err.response?.data?.error || 'Đăng nhập thất bại. Vui lòng thử lại.';
+            const msg = err.response?.data?.error || 'Login failed. Please try again.';
             setError(msg);
         } finally {
             setLoading(false);
@@ -60,8 +60,8 @@ function LoginForm({ onSwitchToRegister }) {
     return (
         <form onSubmit={handleSubmit} noValidate>
             <div className="form-header">
-                <h2>Chào mừng trở lại</h2>
-                <p>Nhập thông tin đăng nhập của bạn</p>
+                <h2>Welcome back</h2>
+                <p>Enter your credentials to login</p>
             </div>
 
             {error && <div className="alert-error">⚠ {error}</div>}
@@ -79,7 +79,7 @@ function LoginForm({ onSwitchToRegister }) {
             </div>
 
             <div className="form-group">
-                <label className="form-label">Mật khẩu</label>
+                <label className="form-label">Password</label>
                 <div className="form-input-wrap">
                     <input
                         type={showPw ? 'text' : 'password'}
@@ -97,17 +97,17 @@ function LoginForm({ onSwitchToRegister }) {
 
             <div className="form-footer">
                 <span />
-                <button type="button" className="form-link">Quên mật khẩu?</button>
+                <button type="button" className="form-link">Forgot password?</button>
             </div>
 
             <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? <span className="spinner" /> : 'Đăng nhập'}
+                {loading ? <span className="spinner" /> : 'Log In'}
             </button>
 
             <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: '#6b7280' }}>
-                Chưa có tài khoản?{' '}
+                Don't have an account?{' '}
                 <button type="button" className="form-link" onClick={onSwitchToRegister}>
-                    Đăng ký ngay
+                    Register now
                 </button>
             </p>
         </form>
@@ -115,11 +115,11 @@ function LoginForm({ onSwitchToRegister }) {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-// Map backend field names → Vietnamese labels
+// Map backend field names → English labels
 const FIELD_LABELS = {
-    name: 'Họ và tên', email: 'Email', password: 'Mật khẩu',
-    phone: 'Số điện thoại', specialty: 'Chuyên khoa',
-    experienceYears: 'Kinh nghiệm', dateOfBirth: 'Ngày sinh', gender: 'Giới tính',
+    name: 'Full Name', email: 'Email', password: 'Password',
+    phone: 'Phone', specialty: 'Specialty',
+    experienceYears: 'Experience', dateOfBirth: 'Date of Birth', gender: 'Gender',
 };
 
 // ─── Register Form ────────────────────────────────────────────────────────────
@@ -148,15 +148,15 @@ function RegisterForm({ onSwitchToLogin }) {
     // Client-side validation → returns { [field]: message } or {}
     const validateForm = () => {
         const errs = {};
-        if (!form.name.trim()) errs.name = 'Họ và tên không được để trống.';
-        if (!form.email.trim()) errs.email = 'Email không được để trống.';
+        if (!form.name.trim()) errs.name = 'Full Name is required.';
+        if (!form.email.trim()) errs.email = 'Email is required.';
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-            errs.email = 'Email không hợp lệ.';
-        if (!form.password) errs.password = 'Mật khẩu không được để trống.';
+            errs.email = 'Invalid email format.';
+        if (!form.password) errs.password = 'Password is required.';
         else if (form.password.length < 8)
-            errs.password = 'Mật khẩu phải có ít nhất 8 ký tự.';
+            errs.password = 'Password must be at least 8 characters.';
         if (role === 'DOCTOR' && !form.specialty.trim())
-            errs.specialty = 'Vui lòng nhập chuyên khoa.';
+            errs.specialty = 'Specialty is required.';
         return errs;
     };
 
@@ -192,7 +192,7 @@ function RegisterForm({ onSwitchToLogin }) {
             };
             const res = await apiRegister(payload);
             login(res.data);
-            toast.success('Đăng ký thành công! Chào mừng bạn 🎉');
+            toast.success('Registration successful! Welcome 🎉');
             navigate(role === 'DOCTOR' ? '/doctor/dashboard' : '/patient/dashboard');
         } catch (err) {
             const data = err.response?.data;
@@ -211,7 +211,7 @@ function RegisterForm({ onSwitchToLogin }) {
                 setGlobalErrors(msgs);
             } else {
                 // Generic error (e.g. 409 email existed)
-                const msg = data?.error || 'Đăng ký thất bại. Vui lòng thử lại.';
+                const msg = data?.error || 'Registration failed. Please try again.';
                 setGlobalErrors([msg]);
             }
         } finally {
@@ -222,15 +222,15 @@ function RegisterForm({ onSwitchToLogin }) {
     return (
         <form onSubmit={handleSubmit} noValidate>
             <div className="form-header">
-                <h2>Tạo tài khoản</h2>
-                <p>Quản lý hành trình chăm sóc sức khoẻ của bạn</p>
+                <h2>Create Account</h2>
+                <p>Manage your healthcare journey</p>
             </div>
 
             {/* Role selector */}
             <div className="role-selector">
                 {[
-                    { value: 'PATIENT', icon: '🏥', name: 'Bệnh nhân', desc: 'Đặt lịch khám' },
-                    { value: 'DOCTOR', icon: '👨‍⚕️', name: 'Bác sĩ', desc: 'Quản lý lịch' },
+                    { value: 'PATIENT', icon: '🏥', name: 'Patient', desc: 'Book appointments' },
+                    { value: 'DOCTOR', icon: '👨‍⚕️', name: 'Doctor', desc: 'Manage schedule' },
                 ].map(r => (
                     <div
                         key={r.value}
@@ -261,10 +261,10 @@ function RegisterForm({ onSwitchToLogin }) {
 
             {/* Common fields */}
             <div className="form-group">
-                <label className="form-label">Họ và tên *</label>
+                <label className="form-label">Full Name *</label>
                 <input
                     className={`form-input ${fieldErrors.name ? 'error' : ''}`}
-                    placeholder="Nguyễn Văn A" value={form.name} onChange={set('name')}
+                    placeholder="John Doe" value={form.name} onChange={set('name')}
                 />
                 {fieldErrors.name && <div className="form-error-msg">⚠ {fieldErrors.name}</div>}
             </div>
@@ -280,7 +280,7 @@ function RegisterForm({ onSwitchToLogin }) {
                     {fieldErrors.email && <div className="form-error-msg">⚠ {fieldErrors.email}</div>}
                 </div>
                 <div className="form-group">
-                    <label className="form-label">Số điện thoại</label>
+                    <label className="form-label">Phone</label>
                     <input
                         className={`form-input ${fieldErrors.phone ? 'error' : ''}`}
                         placeholder="0901234567" value={form.phone} onChange={set('phone')}
@@ -290,7 +290,7 @@ function RegisterForm({ onSwitchToLogin }) {
             </div>
 
             <div className="form-group">
-                <label className="form-label">Mật khẩu * (ít nhất 8 ký tự)</label>
+                <label className="form-label">Password * (min 8 chars)</label>
                 <div className="form-input-wrap">
                     <input
                         type={showPw ? 'text' : 'password'}
@@ -309,19 +309,19 @@ function RegisterForm({ onSwitchToLogin }) {
             {/* Patient extra fields */}
             {role === 'PATIENT' && (
                 <>
-                    <div className="section-divider">Thông tin bệnh nhân</div>
+                    <div className="section-divider">Patient Information</div>
                     <div className="form-row">
                         <div className="form-group">
-                            <label className="form-label">Ngày sinh</label>
+                            <label className="form-label">Date of Birth</label>
                             <input type="date" className="form-input" value={form.dateOfBirth} onChange={set('dateOfBirth')} />
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Giới tính</label>
+                            <label className="form-label">Gender</label>
                             <select className="form-input" value={form.gender} onChange={set('gender')}>
-                                <option value="">-- Chọn --</option>
-                                <option value="MALE">Nam</option>
-                                <option value="FEMALE">Nữ</option>
-                                <option value="OTHER">Khác</option>
+                                <option value="">-- Select --</option>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                                <option value="OTHER">Other</option>
                             </select>
                         </div>
                     </div>
@@ -331,18 +331,18 @@ function RegisterForm({ onSwitchToLogin }) {
             {/* Doctor extra fields */}
             {role === 'DOCTOR' && (
                 <>
-                    <div className="section-divider">Thông tin chuyên môn</div>
+                    <div className="section-divider">Professional Details</div>
                     <div className="form-row">
                         <div className="form-group">
-                            <label className="form-label">Chuyên khoa *</label>
+                            <label className="form-label">Specialty *</label>
                             <input
                                 className={`form-input ${fieldErrors.specialty ? 'error' : ''}`}
-                                placeholder="Tim mạch, Nội khoa..." value={form.specialty} onChange={set('specialty')}
+                                placeholder="Cardiology, General..." value={form.specialty} onChange={set('specialty')}
                             />
                             {fieldErrors.specialty && <div className="form-error-msg">⚠ {fieldErrors.specialty}</div>}
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Kinh nghiệm (năm)</label>
+                            <label className="form-label">Experience (years)</label>
                             <input type="number" min="0" className="form-input" placeholder="5" value={form.experienceYears} onChange={set('experienceYears')} />
                         </div>
                     </div>
@@ -350,19 +350,19 @@ function RegisterForm({ onSwitchToLogin }) {
             )}
 
             <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 14, marginTop: 4 }}>
-                Bằng cách đăng ký, bạn đồng ý với{' '}
-                <span className="form-link">Điều khoản dịch vụ</span> và{' '}
-                <span className="form-link">Chính sách bảo mật</span>.
+                By registering, you agree to our{' '}
+                <span className="form-link">Terms of Service</span> and{' '}
+                <span className="form-link">Privacy Policy</span>.
             </p>
 
             <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? <span className="spinner" /> : 'Tạo tài khoản'}
+                {loading ? <span className="spinner" /> : 'Create Account'}
             </button>
 
             <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: '#6b7280' }}>
-                Đã có tài khoản?{' '}
+                Already have an account?{' '}
                 <button type="button" className="form-link" onClick={onSwitchToLogin}>
-                    Đăng nhập
+                    Log In
                 </button>
             </p>
         </form>
@@ -384,33 +384,32 @@ export default function AuthPage() {
                 </div>
 
                 <nav className="hero-nav">
-                    <a href="#">Trang chủ</a>
-                    <a href="#">Chuyên khoa</a>
-                    <a href="#">Về chúng tôi</a>
-                    <a href="#">Liên hệ</a>
+                    <a href="#">Home</a>
+                    <a href="#">Specialties</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
                 </nav>
 
                 <h1 className="hero-tagline">
-                    Sức khoẻ của bạn,<br />
-                    Ưu tiên của chúng tôi.
+                    Your health,<br />
+                    Our priority.
                 </h1>
                 <p className="hero-sub">
-                    Kết nối với hơn 10.000+ chuyên gia hàng đầu và quản lý lịch sử y tế
-                    của bạn một cách an toàn. Tin tưởng bởi hơn 1 triệu bệnh nhân.
+                    Connect with 10,000+ top specialists and manage your medical history securely. Trusted by over 1 million patients.
                 </p>
 
                 <div className="hero-stats">
                     <div className="stat-item">
                         <span className="stat-value">10K+</span>
-                        <span className="stat-label">Bác sĩ chuyên khoa</span>
+                        <span className="stat-label">Specialists</span>
                     </div>
                     <div className="stat-item">
                         <span className="stat-value">1M+</span>
-                        <span className="stat-label">Bệnh nhân</span>
+                        <span className="stat-label">Patients</span>
                     </div>
                     <div className="stat-item">
                         <span className="stat-value">50+</span>
-                        <span className="stat-label">Chuyên khoa</span>
+                        <span className="stat-label">Specialties</span>
                     </div>
                 </div>
             </div>
@@ -423,13 +422,13 @@ export default function AuthPage() {
                         className={`auth-tab ${tab === 'login' ? 'active' : ''}`}
                         onClick={() => setTab('login')}
                     >
-                        Đăng nhập
+                        Log In
                     </button>
                     <button
                         className={`auth-tab ${tab === 'register' ? 'active' : ''}`}
                         onClick={() => setTab('register')}
                     >
-                        Đăng ký
+                        Register
                     </button>
                 </div>
 

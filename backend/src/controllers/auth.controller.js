@@ -262,7 +262,7 @@ exports.logout = async (req, res) => {
     if (all) {
       // Logout tất cả thiết bị
       await RefreshToken.deleteByUserId(req.user.id);
-      return res.json({ message: 'Đã đăng xuất khỏi tất cả thiết bị' });
+      return res.json({ message: 'Logged out from all devices' });
     }
 
     if (!refreshToken) {
@@ -271,7 +271,7 @@ exports.logout = async (req, res) => {
 
     // Logout thiết bị hiện tại
     await RefreshToken.deleteByToken(refreshToken);
-    res.json({ message: 'Đăng xuất thành công' });
+    res.json({ message: 'Logout successful' });
   } catch (err) {
     console.error('LOGOUT ERROR:', err);
     res.status(500).json({ error: 'Server error' });

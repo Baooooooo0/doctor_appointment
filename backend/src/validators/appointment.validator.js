@@ -6,12 +6,12 @@ const { body } = require('express-validator');
  */
 exports.createAppointmentRules = [
     body('doctorId')
-        .notEmpty().withMessage('doctorId là bắt buộc')
-        .isUUID().withMessage('doctorId phải là UUID hợp lệ'),
+        .notEmpty().withMessage('doctorId is required')
+        .isUUID().withMessage('doctorId must be a valid UUID'),
 
     body('scheduleId')
-        .notEmpty().withMessage('scheduleId là bắt buộc')
-        .isUUID().withMessage('scheduleId phải là UUID hợp lệ')
+        .notEmpty().withMessage('scheduleId is required')
+        .isUUID().withMessage('scheduleId must be a valid UUID')
 ];
 
 /**
@@ -22,16 +22,16 @@ exports.createAppointmentRules = [
  */
 exports.createReviewRules = [
     body('appointmentId')
-        .notEmpty().withMessage('appointmentId là bắt buộc')
-        .isUUID().withMessage('appointmentId phải là UUID hợp lệ'),
+        .notEmpty().withMessage('appointmentId is required')
+        .isUUID().withMessage('appointmentId must be a valid UUID'),
 
     body('rating')
-        .notEmpty().withMessage('rating là bắt buộc')
-        .isInt({ min: 1, max: 5 }).withMessage('rating phải là số nguyên từ 1 đến 5'),
+        .notEmpty().withMessage('rating is required')
+        .isInt({ min: 1, max: 5 }).withMessage('rating must be an integer between 1 and 5'),
 
     body('comment')
         .optional({ nullable: true })
-        .isLength({ max: 1000 }).withMessage('comment tối đa 1000 ký tự')
+        .isLength({ max: 1000 }).withMessage('comment max length is 1000 characters')
         .trim()
 ];
 
@@ -42,16 +42,16 @@ exports.createReviewRules = [
  */
 exports.createScheduleRules = [
     body('date')
-        .notEmpty().withMessage('date là bắt buộc')
-        .isDate({ format: 'YYYY-MM-DD' }).withMessage('date phải theo định dạng YYYY-MM-DD'),
+        .notEmpty().withMessage('date is required')
+        .isDate({ format: 'YYYY-MM-DD' }).withMessage('date must be in YYYY-MM-DD format'),
 
     body('startTime')
-        .notEmpty().withMessage('startTime là bắt buộc')
-        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('startTime phải theo định dạng HH:MM hoặc HH:MM:SS'),
+        .notEmpty().withMessage('startTime is required')
+        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('startTime must be in HH:MM or HH:MM:SS format'),
 
     body('endTime')
-        .notEmpty().withMessage('endTime là bắt buộc')
-        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('endTime phải theo định dạng HH:MM hoặc HH:MM:SS')
+        .notEmpty().withMessage('endTime is required')
+        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('endTime must be in HH:MM or HH:MM:SS format')
 ];
 
 /**
@@ -61,17 +61,17 @@ exports.createScheduleRules = [
  */
 exports.createBulkScheduleRules = [
     body('slots')
-        .isArray({ min: 1 }).withMessage('slots phải là mảng có ít nhất 1 phần tử'),
+        .isArray({ min: 1 }).withMessage('slots must be an array with at least 1 item'),
 
     body('slots.*.date')
-        .notEmpty().withMessage('Mỗi slot phải có date')
-        .isDate({ format: 'YYYY-MM-DD' }).withMessage('date phải theo định dạng YYYY-MM-DD'),
+        .notEmpty().withMessage('Each slot must have a date')
+        .isDate({ format: 'YYYY-MM-DD' }).withMessage('date must be in YYYY-MM-DD format'),
 
     body('slots.*.startTime')
-        .notEmpty().withMessage('Mỗi slot phải có startTime')
-        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('startTime phải theo định dạng HH:MM hoặc HH:MM:SS'),
+        .notEmpty().withMessage('Each slot must have a startTime')
+        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('startTime must be in HH:MM or HH:MM:SS format'),
 
     body('slots.*.endTime')
-        .notEmpty().withMessage('Mỗi slot phải có endTime')
-        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('endTime phải theo định dạng HH:MM hoặc HH:MM:SS')
+        .notEmpty().withMessage('Each slot must have an endTime')
+        .matches(/^\d{2}:\d{2}(:\d{2})?$/).withMessage('endTime must be in HH:MM or HH:MM:SS format')
 ];

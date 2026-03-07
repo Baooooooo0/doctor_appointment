@@ -9,42 +9,42 @@ const { body } = require('express-validator');
  */
 exports.registerRules = [
     body('email')
-        .notEmpty().withMessage('Email là bắt buộc')
-        .isEmail().withMessage('Email không đúng định dạng')
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Invalid email format')
         .normalizeEmail(),
 
     body('password')
-        .notEmpty().withMessage('Password là bắt buộc')
-        .isLength({ min: 6 }).withMessage('Password phải có ít nhất 6 ký tự'),
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 
     body('role')
-        .notEmpty().withMessage('Role là bắt buộc')
-        .isIn(['PATIENT', 'DOCTOR', 'ADMIN']).withMessage('Role phải là PATIENT, DOCTOR hoặc ADMIN'),
+        .notEmpty().withMessage('Role is required')
+        .isIn(['PATIENT', 'DOCTOR', 'ADMIN']).withMessage('Role must be PATIENT, DOCTOR or ADMIN'),
 
     body('name')
         .optional()
-        .isLength({ max: 100 }).withMessage('Tên tối đa 100 ký tự')
+        .isLength({ max: 100 }).withMessage('Max length is 100 characters')
         .trim(),
 
     // phone: optional, nếu gửi phải là số điện thoại hợp lệ
     body('phone')
         .optional({ nullable: true })
-        .isMobilePhone('vi-VN').withMessage('Số điện thoại không hợp lệ'),
+        .isMobilePhone('vi-VN').withMessage('Invalid mobile phone format'),
 
     // Chỉ validate dateOfBirth nếu có
     body('dateOfBirth')
         .optional({ nullable: true })
-        .isDate({ format: 'YYYY-MM-DD' }).withMessage('dateOfBirth phải theo định dạng YYYY-MM-DD'),
+        .isDate({ format: 'YYYY-MM-DD' }).withMessage('dateOfBirth must be YYYY-MM-DD format'),
 
     // gender: chỉ nhận 3 giá trị
     body('gender')
         .optional({ nullable: true })
-        .isIn(['MALE', 'FEMALE', 'OTHER']).withMessage('gender phải là MALE, FEMALE hoặc OTHER'),
+        .isIn(['MALE', 'FEMALE', 'OTHER']).withMessage('gender must be MALE, FEMALE, or OTHER'),
 
     // experienceYears phải là số nguyên không âm
     body('experienceYears')
         .optional({ nullable: true })
-        .isInt({ min: 0 }).withMessage('experienceYears phải là số nguyên >= 0')
+        .isInt({ min: 0 }).withMessage('experienceYears must be an integer >= 0')
 ];
 
 /**
@@ -53,12 +53,12 @@ exports.registerRules = [
  */
 exports.loginRules = [
     body('email')
-        .notEmpty().withMessage('Email là bắt buộc')
-        .isEmail().withMessage('Email không đúng định dạng')
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Invalid email format')
         .normalizeEmail(),
 
     body('password')
-        .notEmpty().withMessage('Password là bắt buộc')
+        .notEmpty().withMessage('Password is required')
 ];
 
 /**
@@ -67,6 +67,6 @@ exports.loginRules = [
  */
 exports.refreshRules = [
     body('refreshToken')
-        .notEmpty().withMessage('refreshToken là bắt buộc')
-        .isString().withMessage('refreshToken phải là string')
+        .notEmpty().withMessage('refreshToken is required')
+        .isString().withMessage('refreshToken must be a string')
 ];
