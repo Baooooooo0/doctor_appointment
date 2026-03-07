@@ -27,6 +27,7 @@ export default function PatientDashboard() {
 
     // Notifications
     const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
     const [loadingNotifs, setLoadingNotifs] = useState(true);
 
     // Cancel action
@@ -85,8 +86,18 @@ export default function PatientDashboard() {
         setLoadingNotifs(true);
         try {
             const res = await api.get('/notifications');
-            setNotifications((res.data || []).slice(0, 5));
+            setNotifications((res.data.items || []).slice(0, 5));
+            setUnreadCount(res.data.unread || 0);
         } catch { /* silent */ } finally { setLoadingNotifs(false); }
+    };
+
+    const handleMarkAllRead = async () => {
+        try {
+            await api.put('/notifications/read-all');
+            setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
+            setUnreadCount(0);
+            toast.success('All notifications marked as read.');
+        } catch { toast.error('Failed to mark notifications.'); }
     };
 
     const handleCancel = async (id) => {
@@ -286,7 +297,8 @@ export default function PatientDashboard() {
                     {/* Recent Notifications */}
                     <div className="card recent-activity-card">
                         <div className="section-header">
-                            <h3>Recent Notifications</h3>
+                            <h3>Recent Notifications {unreadCount > 0 && <span className="notif-unread-count">{unreadCount}</span>}</h3>
+                            {unreadCount > 0 && <button className="link-view-all" onClick={handleMarkAllRead} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>Mark all read</button>}
                         </div>
 
                         {loadingNotifs ? (
@@ -299,8 +311,8 @@ export default function PatientDashboard() {
                                     <div className={`activity-item ${!n.is_read ? 'unread' : ''}`} key={n.id || i}>
                                         <div className={`activity-dot ${!n.is_read ? 'bg-blue' : 'bg-gray'}`}></div>
                                         <div className="activity-content">
-                                            <h4>{n.type || 'Notification'}</h4>
-                                            <p>{n.message}</p>
+                                            <h4>{n.title || n.type || 'Notification'}</h4>
+                                            <p>{n.content}</p>
                                             {n.created_at && <span className="activity-time">{timeAgo(n.created_at)}</span>}
                                         </div>
                                     </div>
