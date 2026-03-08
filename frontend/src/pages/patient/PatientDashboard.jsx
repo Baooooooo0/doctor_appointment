@@ -148,38 +148,38 @@ export default function PatientDashboard() {
 
                     {/* Health Stats */}
                     <div className="stat-cards">
-                        <div className="stat-card">
+                        <div className="stat-card" style={{ '--delay': '0s' }}>
                             <div className="stat-icon bg-blue-light text-blue"><Calendar size={20} /></div>
                             <div className="stat-info">
                                 <div className="stat-label">Total Appointments</div>
-                                <div className="stat-value">{loadingStats ? '—' : stats.total}</div>
+                                {loadingStats ? <div className="skeleton skeleton-line w-12" style={{ marginTop: 4 }}></div> : <div className="stat-value">{stats.total}</div>}
                                 <div className="stat-subtext text-gray">All time</div>
                             </div>
                         </div>
 
-                        <div className="stat-card">
+                        <div className="stat-card" style={{ '--delay': '0.05s' }}>
                             <div className="stat-icon bg-orange-light text-orange"><Activity size={20} /></div>
                             <div className="stat-info">
                                 <div className="stat-label">Upcoming</div>
-                                <div className="stat-value">{loadingStats ? '—' : stats.upcoming}</div>
+                                {loadingStats ? <div className="skeleton skeleton-line w-12" style={{ marginTop: 4 }}></div> : <div className="stat-value">{stats.upcoming}</div>}
                                 <div className="stat-subtext text-orange">Pending/Confirmed</div>
                             </div>
                         </div>
 
-                        <div className="stat-card">
+                        <div className="stat-card" style={{ '--delay': '0.1s' }}>
                             <div className="stat-icon bg-green-light text-green"><CheckCircle size={20} /></div>
                             <div className="stat-info">
                                 <div className="stat-label">Completed</div>
-                                <div className="stat-value">{loadingStats ? '—' : stats.completed}</div>
+                                {loadingStats ? <div className="skeleton skeleton-line w-12" style={{ marginTop: 4 }}></div> : <div className="stat-value">{stats.completed}</div>}
                                 <div className="stat-subtext text-green">Successfully past</div>
                             </div>
                         </div>
 
-                        <div className="stat-card">
+                        <div className="stat-card" style={{ '--delay': '0.15s' }}>
                             <div className="stat-icon bg-purple-light text-purple"><XCircle size={20} /></div>
                             <div className="stat-info">
                                 <div className="stat-label">Cancelled</div>
-                                <div className="stat-value">{loadingStats ? '—' : stats.cancelled}</div>
+                                {loadingStats ? <div className="skeleton skeleton-line w-12" style={{ marginTop: 4 }}></div> : <div className="stat-value">{stats.cancelled}</div>}
                                 <div className="stat-subtext text-red">Missed/Cancelled</div>
                             </div>
                         </div>
@@ -193,7 +193,23 @@ export default function PatientDashboard() {
                         </div>
 
                         {loadingAppts ? (
-                            <div className="dash-loading"><Loader2 size={24} className="spin-icon" /><p>Loading...</p></div>
+                            <div className="appointment-list">
+                                {[1, 2].map((i) => (
+                                    <div className="card appointment-card" key={i}>
+                                        <div className="appt-header">
+                                            <div className="skeleton skeleton-line w-24"></div>
+                                            <div className="skeleton skeleton-line w-24"></div>
+                                        </div>
+                                        <div className="appt-body">
+                                            <div className="skeleton" style={{ width: 50, height: 50, borderRadius: 10 }}></div>
+                                            <div className="doc-info" style={{ flex: 1 }}>
+                                                <div className="skeleton skeleton-line w-full"></div>
+                                                <div className="skeleton skeleton-line w-24"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         ) : upcomingAppts.length === 0 ? (
                             <div className="dash-empty">
                                 <Calendar size={36} className="dash-empty-icon" />
@@ -254,14 +270,24 @@ export default function PatientDashboard() {
                     </section>
 
                     {/* ── Available Doctors ── */}
-                    <section className="dashboard-section">
+                    <section className="dashboard-section" style={{ '--delay': '0.2s' }}>
                         <div className="section-header">
                             <h3>Available Doctors</h3>
                             <Link to="/doctors" className="link-view-all">View All</Link>
                         </div>
 
                         {loadingDocs ? (
-                            <div className="dash-loading"><Loader2 size={24} className="spin-icon" /><p>Loading...</p></div>
+                            <div className="doctors-grid">
+                                {[1, 2, 3, 4].map(i => (
+                                    <div className="card mini-doc-card" style={{ padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'center' }} key={i}>
+                                        <div className="skeleton" style={{ width: 40, height: 40, borderRadius: '50%' }}></div>
+                                        <div style={{ flex: 1 }}>
+                                            <div className="skeleton skeleton-line w-full"></div>
+                                            <div className="skeleton skeleton-line w-12" style={{ marginBottom: 0 }}></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         ) : doctors.length === 0 ? (
                             <div className="dash-empty"><p>No doctors available.</p></div>
                         ) : (
@@ -302,7 +328,17 @@ export default function PatientDashboard() {
                         </div>
 
                         {loadingNotifs ? (
-                            <div className="dash-loading"><Loader2 size={20} className="spin-icon" /><p>Loading...</p></div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} style={{ display: 'flex', gap: 16 }}>
+                                        <div className="skeleton" style={{ width: 8, height: 8, borderRadius: '50%', marginTop: 6 }}></div>
+                                        <div style={{ flex: 1 }}>
+                                            <div className="skeleton skeleton-line w-24"></div>
+                                            <div className="skeleton skeleton-line w-full"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         ) : notifications.length === 0 ? (
                             <div className="dash-empty"><Bell size={28} className="dash-empty-icon" /><p>No notifications.</p></div>
                         ) : (

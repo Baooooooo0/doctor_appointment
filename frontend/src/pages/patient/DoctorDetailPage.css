@@ -1,3 +1,4 @@
+/* ── Doctor Detail Page ── */
 .doctor-detail-page {
     display: flex;
     flex-direction: column;
@@ -12,22 +13,23 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #64748b;
+    color: var(--text-muted);
     font-weight: 600;
     text-decoration: none;
     font-size: 14px;
     width: fit-content;
-    transition: color 0.2s;
+    transition: color var(--transition);
 }
 
 .back-link:hover {
-    color: #136dec;
+    color: var(--primary);
 }
 
 .detail-grid {
     display: flex;
     align-items: flex-start;
     gap: 32px;
+    animation: fadeUp 0.4s ease-out backwards;
 }
 
 .profile-col {
@@ -43,6 +45,10 @@
 /* ── Left Column (Profile) ── */
 .profile-card {
     padding: 32px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
 }
 
 .profile-header-main {
@@ -63,13 +69,13 @@
 .profile-titles h2 {
     font-size: 24px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 8px;
 }
 
 .badge-specialty {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 13px;
@@ -82,7 +88,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #0f172a;
+    color: var(--text);
     font-weight: 700;
     font-size: 14px;
 }
@@ -104,7 +110,7 @@
 
 .p-stat h4 {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -113,13 +119,13 @@
 .p-stat p {
     font-size: 15px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .profile-about h3 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 12px;
 }
 
@@ -132,19 +138,22 @@
 /* ── Right Column (Booking Widget) ── */
 .booking-widget {
     padding: 24px;
-    border-top: 4px solid #136dec;
+    border-top: 4px solid var(--primary);
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 .booking-widget h3 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 6px;
 }
 
 .booking-subtitle {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 24px;
 }
 
@@ -157,7 +166,7 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 12px;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .date-header-row h4 {
@@ -189,38 +198,41 @@
     min-width: 60px;
     padding: 10px 0;
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    background: white;
+    border: 1px solid var(--border);
+    background: var(--white);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .date-select-btn:hover {
     border-color: #94a3b8;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .date-select-btn.active {
-    background: #136dec;
-    border-color: #136dec;
-    color: white;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+    transform: translateY(0);
 }
 
 .date-select-btn.active .date-day,
 .date-select-btn.active .date-num {
-    color: white;
+    color: var(--white);
 }
 
 .date-day {
     font-size: 12px;
     font-weight: 500;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 4px;
 }
 
 .date-num {
     font-size: 16px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .time-selector {
@@ -230,7 +242,7 @@
 .time-selector h4 {
     font-size: 14px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 12px;
 }
 
@@ -243,24 +255,25 @@
 .slot-btn {
     padding: 10px 0;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    background: white;
+    border: 1px solid var(--border);
+    background: var(--white);
     font-size: 13px;
     font-weight: 600;
     color: #475569;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .slot-btn:hover {
-    border-color: #136dec;
-    color: #136dec;
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
 }
 
 .slot-btn.selected {
-    background: #136dec;
-    border-color: #136dec;
-    color: white;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
 }
 
 .no-slots {
@@ -269,11 +282,11 @@
     border-radius: 8px;
     text-align: center;
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .booking-summary {
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border);
     padding-top: 24px;
 }
 
@@ -284,23 +297,36 @@
     margin-bottom: 16px;
     font-size: 14px;
     font-weight: 500;
-    color: #475569;
+    color: var(--text-muted);
 }
 
 .fee-amount {
     font-weight: 700;
-    color: #16a34a;
+    color: var(--success);
 }
 
 .btn-book-final {
     width: 100%;
     padding: 14px;
     font-size: 15px;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-book-final:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
 }
 
 .btn-book-final:disabled {
     background: #94a3b8;
-    border-color: #94a3b8;
+    color: #e2e8f0;
     cursor: not-allowed;
 }
 
@@ -314,7 +340,10 @@
 .spinner-sm {
     width: 24px;
     height: 24px;
-    border-width: 2px;
+    border: 2px solid rgba(19, 109, 236, 0.1);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 .detail-loading {
@@ -323,13 +352,19 @@
     align-items: center;
     justify-content: center;
     height: 400px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 /* ── Reviews Section ── */
 .reviews-card {
     padding: 28px 32px;
     margin-top: 20px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.1s;
 }
 
 .reviews-header {
@@ -348,7 +383,7 @@
 .reviews-title-row h3 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .reviews-stats {
@@ -363,12 +398,12 @@
     gap: 5px;
     font-size: 20px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .total-reviews-text {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .no-reviews {
@@ -377,7 +412,7 @@
     border-radius: 10px;
     text-align: center;
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .reviews-list {
@@ -389,13 +424,13 @@
 .review-item {
     padding: 20px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     background: #fafbfc;
-    transition: box-shadow 0.2s;
+    transition: box-shadow var(--transition);
 }
 
 .review-item:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow);
 }
 
 .review-item-header {
@@ -409,7 +444,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #136dec;
+    background: var(--primary);
     color: white;
     font-weight: 700;
     font-size: 14px;
@@ -427,7 +462,7 @@
 
 .reviewer-name {
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
     font-size: 14px;
 }
 
@@ -458,6 +493,18 @@
     line-height: 1.6;
     margin: 0;
     padding-left: 48px;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ── Responsive ── */

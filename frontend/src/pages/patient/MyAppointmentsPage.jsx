@@ -105,9 +105,24 @@ export default function MyAppointmentsPage() {
 
             {/* ── Content ── */}
             {loading ? (
-                <div className="appt-loading">
-                    <Loader2 size={32} className="spin-icon" />
-                    <p>Loading appointments...</p>
+                <div className="appt-list">
+                    {[1, 2, 3, 4].map(i => (
+                        <div className="appt-card" key={i}>
+                            <div className="appt-card-left">
+                                <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 12 }}></div>
+                                <div className="appt-info" style={{ flex: 1, paddingTop: 4 }}>
+                                    <div className="skeleton skeleton-line w-24"></div>
+                                    <div className="appt-meta-row" style={{ marginTop: 4 }}>
+                                        <div className="skeleton skeleton-line w-12" style={{ marginBottom: 0 }}></div>
+                                        <div className="skeleton skeleton-line w-12" style={{ marginBottom: 0 }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="appt-card-right">
+                                <div className="skeleton skeleton-line w-12" style={{ height: 26, borderRadius: 20, marginBottom: 0 }}></div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : appointments.length === 0 ? (
                 <div className="appt-empty">
@@ -117,11 +132,11 @@ export default function MyAppointmentsPage() {
                 </div>
             ) : (
                 <div className="appt-list">
-                    {appointments.map(appt => {
+                    {appointments.map((appt, index) => {
                         const status = STATUS_CONFIG[appt.status] || STATUS_CONFIG.PENDING;
                         const StatusIcon = status.icon;
                         return (
-                            <div className="appt-card" key={appt.id}>
+                            <div className="appt-card" key={appt.id} data-status={appt.status} style={{ '--delay': `${index * 0.05}s` }}>
                                 <div className="appt-card-left">
                                     <div className="doctor-avatar-sm">
                                         <User size={20} />

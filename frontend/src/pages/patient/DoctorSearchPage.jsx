@@ -101,11 +101,25 @@ export default function DoctorSearchPage() {
                 </form>
             </div>
 
-            {/* ── Results List ── */}
             {loading ? (
-                <div className="loading-state">
-                    <div className="spinner"></div>
-                    <p>Loading doctors...</p>
+                <div className="results-grid">
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                        <div className="doctor-card" key={i}>
+                            <div className="doctor-card-header">
+                                <div className="skeleton" style={{ width: 64, height: 64, borderRadius: 12 }}></div>
+                                <div className="skeleton skeleton-line w-12" style={{ height: 24, borderRadius: 12 }}></div>
+                            </div>
+                            <div className="doctor-card-body">
+                                <div className="skeleton skeleton-line w-full"></div>
+                                <div className="skeleton skeleton-line w-24"></div>
+                                <div className="skeleton skeleton-line w-24" style={{ marginTop: 16 }}></div>
+                            </div>
+                            <div className="doctor-card-footer">
+                                <div className="skeleton skeleton-line" style={{ height: 38, flex: 1, borderRadius: 8, marginBottom: 0 }}></div>
+                                <div className="skeleton skeleton-line" style={{ height: 38, flex: 1, borderRadius: 8, marginBottom: 0 }}></div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : doctors.length === 0 ? (
                 <div className="empty-state">
@@ -120,11 +134,11 @@ export default function DoctorSearchPage() {
             ) : (
                 <>
                     <div className="results-grid">
-                        {doctors.map(doctor => (
-                            <div className="doctor-card" key={doctor.id || doctor.doctorId}>
+                        {doctors.map((doctor, index) => (
+                            <div className="doctor-card" key={doctor.id || doctor.doctorId} style={{ '--delay': `${index * 0.05}s` }}>
                                 <div className="doctor-card-header">
                                     <img
-                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name || 'Doc')}&background=random`}
+                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name || 'Doc')}&background=136dec&color=fff`}
                                         alt={doctor.name}
                                         className="doctor-avatar"
                                     />

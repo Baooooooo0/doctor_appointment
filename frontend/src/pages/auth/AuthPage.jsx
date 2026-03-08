@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { login as apiLogin, register as apiRegister } from '../../api/auth.api';
+import { Stethoscope, User } from 'lucide-react';
 import './AuthPage.css';
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -229,8 +230,8 @@ function RegisterForm({ onSwitchToLogin }) {
             {/* Role selector */}
             <div className="role-selector">
                 {[
-                    { value: 'PATIENT', icon: '🏥', name: 'Patient', desc: 'Book appointments' },
-                    { value: 'DOCTOR', icon: '👨‍⚕️', name: 'Doctor', desc: 'Manage schedule' },
+                    { value: 'PATIENT', icon: <User size={28} strokeWidth={1.5} />, name: 'Patient', desc: 'Book appointments' },
+                    { value: 'DOCTOR', icon: <Stethoscope size={28} strokeWidth={1.5} />, name: 'Doctor', desc: 'Manage schedule' },
                 ].map(r => (
                     <div
                         key={r.value}

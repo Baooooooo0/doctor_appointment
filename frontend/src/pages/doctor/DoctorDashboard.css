@@ -10,21 +10,23 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #136dec 0%, #0d50c0 100%);
-    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary) 0%, #0d50c0 100%);
+    border-radius: var(--radius);
     padding: 28px 32px;
-    color: white;
+    color: var(--white);
+    box-shadow: 0 10px 25px -5px rgba(19, 109, 236, 0.4);
+    animation: fadeUp 0.4s ease-out backwards;
 }
 
 .welcome-text h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     margin-bottom: 6px;
 }
 
 .welcome-text p {
     font-size: 14px;
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 .welcome-date {
@@ -44,6 +46,8 @@
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.1s;
 }
 
 .doc-stat-card {
@@ -52,11 +56,18 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: var(--shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+}
+
+.doc-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
 }
 
 .stat-icon-wrap {
@@ -70,33 +81,33 @@
 }
 
 .doc-stat-card.total .stat-icon-wrap {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 .doc-stat-card.pending .stat-icon-wrap {
     background: #fef9c3;
-    color: #a16207;
+    color: var(--warning);
 }
 
 .doc-stat-card.confirmed .stat-icon-wrap {
-    background: #dbeafe;
-    color: #1d4ed8;
+    background: #e0e7ff;
+    color: #4338ca;
 }
 
 .doc-stat-card.completed .stat-icon-wrap {
     background: #dcfce7;
-    color: #15803d;
+    color: var(--success);
 }
 
 .doc-stat-card.rating .stat-icon-wrap {
     background: #fff7ed;
-    color: #c2410c;
+    color: #ea580c;
 }
 
 .stat-label {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 4px;
     font-weight: 500;
 }
@@ -104,7 +115,7 @@
 .stat-num {
     font-size: 26px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text);
     line-height: 1;
 }
 
@@ -114,6 +125,8 @@
     grid-template-columns: 1fr 380px;
     gap: 24px;
     align-items: start;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.2s;
 }
 
 .doc-right-col {
@@ -124,11 +137,11 @@
 
 /* ── Section Card ── */
 .doc-section {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: var(--shadow);
 }
 
 .section-header {
@@ -141,7 +154,7 @@
 .section-header h3 {
     font-size: 16px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .section-link {
@@ -149,7 +162,7 @@
     align-items: center;
     gap: 3px;
     font-size: 13px;
-    color: #136dec;
+    color: var(--primary);
     font-weight: 600;
     text-decoration: none;
 }
@@ -163,8 +176,8 @@
 }
 
 .date-chip {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
     padding: 4px 10px;
     border-radius: 8px;
     font-size: 12px;
@@ -181,8 +194,8 @@
 .spinner {
     width: 36px;
     height: 36px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #136dec;
+    border: 3px solid rgba(19, 109, 236, 0.1);
+    border-top: 3px solid var(--primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -203,6 +216,18 @@
     }
 }
 
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ── Empty States ── */
 .doc-empty {
     display: flex;
@@ -211,22 +236,22 @@
     justify-content: center;
     padding: 40px 0;
     text-align: center;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 14px;
 }
 
 .empty-ok-icon {
-    color: #16a34a;
+    color: var(--success);
     margin-bottom: 12px;
 }
 
 .doc-empty-sm {
     padding: 16px;
-    background: #f8fafc;
+    background: var(--bg-page);
     border-radius: 8px;
     text-align: center;
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 /* ── Pending Appointment Cards ── */
@@ -242,14 +267,15 @@
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-page);
+    border: 1px solid var(--border);
     border-radius: 10px;
-    transition: box-shadow 0.2s;
+    border-left: 3px solid var(--warning);
+    transition: box-shadow var(--transition);
 }
 
 .pending-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-hover);
 }
 
 .pending-info {
@@ -264,8 +290,8 @@
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: #136dec;
-    color: white;
+    background: var(--primary);
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -277,7 +303,7 @@
 .pending-label {
     font-size: 14px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 4px;
 }
 
@@ -286,7 +312,7 @@
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .pending-btns {
@@ -301,34 +327,37 @@
     gap: 5px;
     padding: 7px 12px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid transparent;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .btn-confirm {
     background: #dcfce7;
-    color: #15803d;
+    color: var(--success);
 }
 
 .btn-confirm:hover:not(:disabled) {
     background: #bbf7d0;
+    transform: translateY(-1px);
 }
 
 .btn-reject {
     background: #fee2e2;
-    color: #b91c1c;
+    color: var(--error);
 }
 
 .btn-reject:hover:not(:disabled) {
     background: #fecaca;
+    transform: translateY(-1px);
 }
 
 .btn-action:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
 /* ── Today's Schedule Timeline ── */
@@ -352,11 +381,11 @@
 }
 
 .slot-free .slot-dot {
-    background: #16a34a;
+    background: var(--success);
 }
 
 .slot-busy .slot-dot {
-    background: #136dec;
+    background: var(--primary);
 }
 
 .slot-body {
@@ -364,7 +393,7 @@
     flex: 1;
     justify-content: space-between;
     align-items: center;
-    background: #f8fafc;
+    background: var(--bg-page);
     padding: 10px 14px;
     border-radius: 8px;
 }
@@ -372,7 +401,7 @@
 .slot-time {
     font-size: 13px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .slot-badge {
@@ -385,12 +414,12 @@
 
 .badge-free {
     background: #dcfce7;
-    color: #15803d;
+    color: var(--success);
 }
 
 .badge-booked {
-    background: #dbeafe;
-    color: #1d4ed8;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 /* ── Notifications ── */
@@ -406,12 +435,12 @@
     gap: 10px;
     padding: 12px;
     border-radius: 8px;
-    background: #f8fafc;
+    background: var(--bg-page);
 }
 
 .notif-item.unread {
-    background: #eff6ff;
-    border-left: 3px solid #136dec;
+    background: var(--primary-light);
+    border-left: 3px solid var(--primary);
 }
 
 .notif-dot {
@@ -424,24 +453,24 @@
 }
 
 .notif-item.unread .notif-dot {
-    background: #136dec;
+    background: var(--primary);
 }
 
 .notif-msg {
     font-size: 13px;
-    color: #0f172a;
+    color: var(--text);
     line-height: 1.5;
     margin-bottom: 4px;
 }
 
 .notif-time {
     font-size: 11px;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 /* ── Profile Summary Card ── */
 .profile-summary-card {
-    border-top: 4px solid #136dec;
+    border-top: 4px solid var(--primary);
 }
 
 .profile-summary-header {
@@ -455,18 +484,19 @@
     width: 56px;
     height: 56px;
     border-radius: 12px;
+    box-shadow: var(--shadow);
 }
 
 .profile-summary-header h4 {
     font-size: 16px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 6px;
 }
 
 .profile-specialty-badge {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
     font-size: 12px;
     font-weight: 600;
     padding: 3px 10px;
@@ -477,7 +507,7 @@
     display: flex;
     gap: 20px;
     font-size: 13px;
-    color: #475569;
+    color: var(--text-muted);
 }
 
 .star-inline {

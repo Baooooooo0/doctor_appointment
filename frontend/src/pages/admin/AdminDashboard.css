@@ -6,19 +6,20 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    animation: fadeUp 0.4s ease-out backwards;
 }
 
 /* ── Header ── */
 .adm-header h1 {
     font-size: 26px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 6px;
 }
 
 .adm-header p {
     font-size: 14px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 /* ── Stats Row ── */
@@ -33,16 +34,18 @@
     align-items: center;
     gap: 16px;
     padding: 24px;
-    border-radius: 14px;
-    background: white;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+    animation: fadeUp 0.4s ease-out backwards;
 }
 
 .adm-stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-hover);
 }
 
 .adm-stat-icon {
@@ -56,13 +59,13 @@
 }
 
 .adm-stat-blue .adm-stat-icon {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 .adm-stat-green .adm-stat-icon {
     background: #f0fdf4;
-    color: #16a34a;
+    color: var(--success);
 }
 
 .adm-stat-purple .adm-stat-icon {
@@ -72,12 +75,12 @@
 
 .adm-stat-amber .adm-stat-icon {
     background: #fffbeb;
-    color: #d97706;
+    color: var(--warning);
 }
 
 .adm-stat-label {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
     font-weight: 500;
     margin-bottom: 4px;
 }
@@ -85,15 +88,17 @@
 .adm-stat-num {
     font-size: 28px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text);
 }
 
 /* ── Main Tabs ── */
 .adm-main-tabs {
     display: flex;
     gap: 8px;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--border);
     padding-bottom: 0;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.1s;
 }
 
 .adm-main-tab {
@@ -107,37 +112,43 @@
     margin-bottom: -2px;
     font-size: 14px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .adm-main-tab:hover {
-    color: #0f172a;
+    color: var(--text);
 }
 
 .adm-main-tab.active {
-    color: #136dec;
-    border-bottom-color: #136dec;
+    color: var(--primary);
+    border-bottom-color: var(--primary);
 }
 
 .adm-tab-count {
-    background: #f1f5f9;
+    background: var(--bg-page);
     padding: 2px 8px;
     border-radius: 10px;
     font-size: 11px;
     font-weight: 700;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .adm-main-tab.active .adm-tab-count {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 /* ── Users Section ── */
 .adm-users-section {
     padding: 28px 32px;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.2s;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
 }
 
 .adm-users-header {
@@ -154,19 +165,19 @@
 .adm-users-title-row h3 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .adm-icon-blue {
-    color: #136dec;
+    color: var(--primary);
 }
 
 .adm-user-count {
     margin-left: auto;
     font-size: 13px;
     font-weight: 600;
-    color: #64748b;
-    background: #f1f5f9;
+    color: var(--text-muted);
+    background: var(--bg-page);
     padding: 4px 12px;
     border-radius: 20px;
 }
@@ -186,25 +197,25 @@
 
 .adm-role-btn {
     padding: 7px 16px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: white;
+    background: var(--white);
     font-size: 13px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .adm-role-btn:hover {
     border-color: #94a3b8;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .adm-role-btn.active {
-    background: #136dec;
-    border-color: #136dec;
-    color: white;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
 }
 
 /* Search */
@@ -225,17 +236,17 @@
 .adm-search-form input {
     width: 100%;
     padding: 9px 14px 9px 36px;
-    border: 1.5px solid #e2e8f0;
+    border: 1.5px solid var(--border);
     border-radius: 10px;
     font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    color: #0f172a;
+    font-family: inherit;
+    color: var(--text);
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
 .adm-search-form input:focus {
-    border-color: #136dec;
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(19, 109, 236, 0.1);
 }
 
@@ -247,7 +258,7 @@
     justify-content: center;
     padding: 40px 0;
     gap: 10px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .adm-empty {
@@ -256,7 +267,7 @@
     align-items: center;
     justify-content: center;
     padding: 48px 0;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .adm-empty-icon {
@@ -267,13 +278,12 @@
 .adm-empty h4 {
     font-size: 16px;
     font-weight: 700;
-    color: #475569;
+    color: var(--text);
     margin-bottom: 4px;
 }
 
 .adm-empty p {
     font-size: 13px;
-    color: #94a3b8;
 }
 
 /* ── Table ── */
@@ -292,9 +302,9 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #64748b;
+    color: var(--text-muted);
     padding: 12px 16px;
-    border-bottom: 2px solid #f1f5f9;
+    border-bottom: 2px solid var(--border);
     background: #fafbfc;
 }
 
@@ -302,7 +312,7 @@
     padding: 14px 16px;
     font-size: 14px;
     color: #475569;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
 
@@ -334,11 +344,11 @@
 
 .adm-user-name {
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .adm-td-email {
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 13px;
 }
 
@@ -359,18 +369,18 @@
 }
 
 .role-patient {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 .role-doctor {
     background: #f0fdf4;
-    color: #16a34a;
+    color: var(--success);
 }
 
 .role-admin {
     background: #fef3c7;
-    color: #b45309;
+    color: var(--warning);
 }
 
 /* Status badges */
@@ -385,39 +395,39 @@
 }
 
 .status-active {
-    background: #f0fdf4;
-    color: #16a34a;
+    background: #dcfce7;
+    color: var(--success);
 }
 
 .status-locked {
-    background: #fef2f2;
-    color: #dc2626;
+    background: #fee2e2;
+    color: var(--error);
 }
 
 /* Appointment status badges */
 .appt-st-pending {
-    background: #fff7ed;
-    color: #ea580c;
+    background: #fef9c3;
+    color: #a16207;
 }
 
 .appt-st-confirmed {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 .appt-st-completed {
-    background: #f0fdf4;
-    color: #16a34a;
+    background: #dcfce7;
+    color: var(--success);
 }
 
 .appt-st-cancelled {
-    background: #f1f5f9;
-    color: #64748b;
+    background: var(--bg-page);
+    color: var(--text-muted);
 }
 
 .appt-st-rejected {
-    background: #fef2f2;
-    color: #dc2626;
+    background: #fee2e2;
+    color: var(--error);
 }
 
 /* Time cell */
@@ -449,34 +459,37 @@
     font-weight: 600;
     border: 1.5px solid transparent;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .btn-lock {
     background: #fef2f2;
-    color: #dc2626;
+    color: var(--error);
     border-color: #fecaca;
 }
 
 .btn-lock:hover {
     background: #fee2e2;
-    border-color: #dc2626;
+    border-color: var(--error);
+    transform: translateY(-1px);
 }
 
 .btn-unlock {
     background: #f0fdf4;
-    color: #16a34a;
+    color: var(--success);
     border-color: #bbf7d0;
 }
 
 .btn-unlock:hover {
     background: #dcfce7;
-    border-color: #16a34a;
+    border-color: var(--success);
+    transform: translateY(-1px);
 }
 
 .adm-action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
 /* ── Pagination ── */
@@ -486,7 +499,7 @@
     justify-content: center;
     gap: 16px;
     padding-top: 20px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--border);
     margin-top: 20px;
 }
 
@@ -495,19 +508,20 @@
     align-items: center;
     gap: 4px;
     padding: 8px 16px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background: white;
+    background: var(--white);
     font-size: 13px;
     font-weight: 600;
-    color: #475569;
+    color: var(--text);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .adm-page-btn:hover:not(:disabled) {
-    border-color: #136dec;
-    color: #136dec;
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
 }
 
 .adm-page-btn:disabled {
@@ -517,13 +531,14 @@
 
 .adm-page-info {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
 /* Spinner */
 .spin-icon {
     animation: spin 1s linear infinite;
+    color: var(--primary);
 }
 
 @keyframes spin {
@@ -533,6 +548,18 @@
 
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -560,6 +587,7 @@
 
     .adm-role-tabs {
         overflow-x: auto;
+        padding-bottom: 8px;
     }
 
     .adm-users-section {

@@ -3,40 +3,19 @@
    Theo thiết kế Stitch: HealthCare+
 ═══════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-/* ── Reset & Variables ───────────────── */
-:root {
-  --primary: #136dec;
-  --primary-dark: #0d56c2;
-  --primary-light: #e8f0fe;
-  --text: #1a1a2e;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --bg: #f9fafb;
-  --white: #ffffff;
-  --error: #ef4444;
-  --success: #22c55e;
-  --radius: 12px;
-  --shadow: 0 4px 24px rgba(19, 109, 236, .10);
-  --transition: .2s ease;
-}
-
 .auth-page {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
+  background: var(--bg-page);
   overflow-x: hidden;
-  /* prevent horizontal scroll */
 }
 
 /* ── Left hero panel ─────────────────── */
 .auth-hero {
   flex: 0 0 50%;
   width: 50%;
-  background: linear-gradient(145deg, #0d56c2 0%, #136dec 55%, #38a3f5 100%);
+  background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 55%, #38a3f5 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -53,6 +32,21 @@
   inset: 0;
   background: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='300' cy='100' r='220' fill='rgba(255,255,255,.05)'/%3E%3Ccircle cx='50' cy='350' r='180' fill='rgba(255,255,255,.04)'/%3E%3C/svg%3E") no-repeat;
   pointer-events: none;
+  animation: floatBg 20s infinite alternate ease-in-out;
+}
+
+@keyframes floatBg {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  50% {
+    transform: scale(1.05) translate(20px, -15px);
+  }
+
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
 }
 
 .hero-logo {
@@ -134,7 +128,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 48px 60px;
-  background: var(--white);
+  background: var(--bg-card);
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -142,7 +136,7 @@
 /* ── Tab switcher ────────────────────── */
 .auth-tabs {
   display: flex;
-  background: var(--bg);
+  background: var(--bg-page);
   border-radius: var(--radius);
   padding: 4px;
   margin-bottom: 32px;
@@ -203,21 +197,30 @@
   text-align: center;
   transition: all var(--transition);
   background: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .role-card:hover {
   border-color: var(--primary);
   background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .role-card.selected {
   border-color: var(--primary);
   background: var(--primary-light);
+  box-shadow: var(--shadow-focus);
 }
 
 .role-icon {
-  font-size: 26px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .role-name {
@@ -261,7 +264,7 @@
 
 .form-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(19, 109, 236, .12);
+  box-shadow: var(--shadow-focus);
 }
 
 .form-input.error {
@@ -324,8 +327,8 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: background var(--transition), transform var(--transition);
+  font-family: inherit;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
   margin-top: 8px;
   display: flex;
   align-items: center;
@@ -335,6 +338,8 @@
 
 .btn-primary:hover:not(:disabled) {
   background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -388,7 +393,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid rgba(255, 255, 255, .4);
-  border-top-color: white;
+  border-top-color: var(--white);
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }

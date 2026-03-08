@@ -1,3 +1,4 @@
+/* ── Appointments Page ── */
 .appointments-page {
     display: flex;
     flex-direction: column;
@@ -11,23 +12,24 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    animation: fadeUp 0.4s ease-out backwards;
 }
 
 .page-header h1 {
     font-size: 24px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 4px;
 }
 
 .page-header p {
     font-size: 14px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 .total-badge {
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
     font-weight: 700;
     font-size: 14px;
     padding: 8px 16px;
@@ -40,30 +42,32 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 0;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.1s;
 }
 
 .tab-btn {
     padding: 10px 18px;
     font-size: 14px;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-muted);
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
     margin-bottom: -1px;
 }
 
 .tab-btn:hover {
-    color: #136dec;
+    color: var(--primary);
 }
 
 .tab-btn.active {
-    color: #136dec;
-    border-bottom-color: #136dec;
+    color: var(--primary);
+    border-bottom-color: var(--primary);
 }
 
 /* ── Loading / Empty ── */
@@ -74,7 +78,7 @@
     align-items: center;
     justify-content: center;
     padding: 80px 0;
-    color: #64748b;
+    color: var(--text-muted);
     text-align: center;
     gap: 12px;
 }
@@ -82,12 +86,11 @@
 .appt-empty h3 {
     font-size: 18px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
 }
 
 .appt-empty p {
     font-size: 14px;
-    color: #94a3b8;
 }
 
 .empty-icon {
@@ -96,7 +99,7 @@
 
 .spin-icon {
     animation: spin 1s linear infinite;
-    color: #136dec;
+    color: var(--primary);
 }
 
 @keyframes spin {
@@ -105,28 +108,61 @@
     }
 }
 
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* ── Appointment List ── */
 .appt-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    animation: fadeUp 0.4s ease-out backwards;
+    animation-delay: 0.2s;
 }
 
 .appt-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius);
     padding: 20px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    transition: box-shadow 0.2s, transform 0.2s;
+    transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.appt-card[data-status="PENDING"] {
+    border-left-color: var(--warning);
+}
+
+.appt-card[data-status="CONFIRMED"] {
+    border-left-color: var(--primary);
+}
+
+.appt-card[data-status="COMPLETED"] {
+    border-left-color: var(--success);
+}
+
+.appt-card[data-status="CANCELLED"],
+.appt-card[data-status="REJECTED"] {
+    border-left-color: var(--error);
+    border-left-width: 1px;
 }
 
 .appt-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
 }
 
 .appt-card-left {
@@ -141,8 +177,8 @@
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: #eff6ff;
-    color: #136dec;
+    background: var(--primary-light);
+    color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -154,9 +190,9 @@
 }
 
 .appt-info h3 {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text);
     margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
@@ -173,9 +209,9 @@
 .appt-meta-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
 }
 
 /* ── Right Side (Status + Actions) ── */
@@ -204,41 +240,42 @@
 }
 
 .status-confirmed {
-    background: #dbeafe;
-    color: #1e40af;
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 .status-completed {
     background: #dcfce7;
-    color: #166534;
+    color: var(--success);
 }
 
 .status-cancelled {
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--bg-page);
+    color: var(--text-muted);
 }
 
 .status-rejected {
     background: #fee2e2;
-    color: #991b1b;
+    color: var(--error);
 }
 
 /* ── Cancel Button ── */
 .btn-cancel-appt {
     padding: 8px 16px;
-    background: white;
+    background: var(--white);
     border: 1px solid #fca5a5;
     border-radius: 8px;
-    color: #dc2626;
+    color: var(--error);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .btn-cancel-appt:hover:not(:disabled) {
     background: #fee2e2;
-    border-color: #dc2626;
+    border-color: var(--error);
+    transform: translateY(-1px);
 }
 
 .btn-cancel-appt:disabled {
@@ -260,20 +297,20 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--white);
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition);
 }
 
 .btn-page:hover:not(:disabled) {
-    background: #f8fafc;
-    border-color: #136dec;
-    color: #136dec;
+    background: var(--bg-page);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .btn-page:disabled {
@@ -283,7 +320,7 @@
 
 .page-info {
     font-size: 14px;
-    color: #64748b;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
