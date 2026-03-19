@@ -52,15 +52,19 @@ exports.updateStatus = async (id, status) => {
  */
 // status là optional – nếu truyền vào thì filter thêm theo status
 exports.findByDoctorId = async (doctorId, status = null, limit = 10, offset = 0) => {
-  let sql = 'SELECT * FROM appointments WHERE doctor_id = ?';
+  let sql = `SELECT a.*, u.name AS patient_name
+    FROM appointments a
+    LEFT JOIN patients p ON a.patient_id = p.id
+    LEFT JOIN users u ON p.user_id = u.id
+    WHERE a.doctor_id = ?`;
   const params = [doctorId];
 
   if (status) {
-    sql += ' AND status = ?';
+    sql += ' AND a.status = ?';
     params.push(status);
   }
 
-  sql += ' ORDER BY date DESC, start_time DESC LIMIT ? OFFSET ?';
+  sql += ' ORDER BY a.date DESC, a.start_time DESC LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
   const [rows] = await pool.query(sql, params);
@@ -77,10 +81,12 @@ exports.countByDoctorId = async (doctorId, status = null) => {
 
 // status là optional – nếu truyền vào thì filter thêm theo status
 exports.findByPatientId = async (patientId, status = null, limit = 10, offset = 0) => {
-  let sql = `SELECT a.*, u.name AS doctor_name, d.specialty AS doctor_specialty
+  let sql = `SELECT a.*, u.name AS doctor_name, d.specialty AS doctor_specialty,
+      CASE WHEN r.id IS NOT NULL THEN TRUE ELSE FALSE END AS reviewed
      FROM appointments a
      LEFT JOIN doctors d ON a.doctor_id = d.id
      LEFT JOIN users u ON d.user_id = u.id
+     LEFT JOIN reviews r ON r.appointment_id = a.id
      WHERE a.patient_id = ?`;
   const params = [patientId];
 

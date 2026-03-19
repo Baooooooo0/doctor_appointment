@@ -23,8 +23,8 @@ const MENU_CONFIG = {
     DOCTOR: {
         main: [
             { label: 'Dashboard', icon: LayoutDashboard, path: '/doctor/dashboard' },
+            { label: 'Appointments', icon: Users, path: '/doctor/appointments' },
             { label: 'My Schedule', icon: Calendar, path: '/doctor/schedules' },
-            { label: 'Patients', icon: Users, path: '/doctor/patients' },
         ],
         settings: [
             { label: 'Profile', icon: User, path: '/profile' },

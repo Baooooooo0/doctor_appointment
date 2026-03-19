@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, User, CheckCircle, XCircle, AlertCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, User, CheckCircle, XCircle, AlertCircle, Loader2, ChevronLeft, ChevronRight, Star, MessageSquare, X } from 'lucide-react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 import './MyAppointmentsPage.css';
@@ -21,6 +21,96 @@ const STATUS_CONFIG = {
     REJECTED: { label: 'Rejected', color: 'status-rejected', icon: XCircle },
 };
 
+function ReviewModal({ appointment, rating, comment, submitting, fieldError, globalError, onRatingChange, onCommentChange, onClose, onSubmit }) {
+    if (!appointment) return null;
+
+    const formatDate = (dateStr) => {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    };
+
+    const formatTime = (timeStr) => timeStr?.slice(0, 5) || '--:--';
+
+    return (
+        <div className="review-modal-overlay" onClick={onClose}>
+            <div
+                className="review-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="review-modal-title"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button className="review-close-btn" onClick={onClose} disabled={submitting} aria-label="Close review form">
+                    <X size={18} />
+                </button>
+
+                <div className="review-modal-header">
+                    <div className="review-modal-icon">
+                        <MessageSquare size={20} />
+                    </div>
+                    <div>
+                        <h2 id="review-modal-title">Write Review</h2>
+                        <p>Share your experience after this appointment.</p>
+                    </div>
+                </div>
+
+                <div className="review-appointment-summary">
+                    <div className="review-summary-name">{appointment.doctor_name || `Doctor ID: ${appointment.doctor_id?.slice(0, 8)}…`}</div>
+                    <div className="review-summary-meta">
+                        <span><Calendar size={13} /> {formatDate(appointment.date)}</span>
+                        <span><Clock size={13} /> {formatTime(appointment.start_time)} – {formatTime(appointment.end_time)}</span>
+                    </div>
+                </div>
+
+                {globalError && <div className="review-global-error">{globalError}</div>}
+
+                <form onSubmit={onSubmit} className="review-form">
+                    <div className="review-field">
+                        <label>Rating *</label>
+                        <div className="review-stars" role="radiogroup" aria-label="Rating">
+                            {[1, 2, 3, 4, 5].map((value) => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    className={`review-star-btn ${rating >= value ? 'active' : ''}`}
+                                    onClick={() => onRatingChange(value)}
+                                    aria-label={`${value} star${value > 1 ? 's' : ''}`}
+                                    aria-pressed={rating === value}
+                                >
+                                    <Star size={22} fill={rating >= value ? 'currentColor' : 'none'} />
+                                </button>
+                            ))}
+                        </div>
+                        {fieldError && <div className="review-field-error">{fieldError}</div>}
+                    </div>
+
+                    <div className="review-field">
+                        <label htmlFor="review-comment">Comment</label>
+                        <textarea
+                            id="review-comment"
+                            value={comment}
+                            onChange={(e) => onCommentChange(e.target.value)}
+                            placeholder="Tell us what went well and how the visit felt."
+                            rows={5}
+                            maxLength={1000}
+                            disabled={submitting}
+                        />
+                    </div>
+
+                    <div className="review-modal-actions">
+                        <button type="button" className="review-btn review-btn-secondary" onClick={onClose} disabled={submitting}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="review-btn review-btn-primary" disabled={submitting}>
+                            {submitting ? 'Submitting...' : 'Submit Review'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 export default function MyAppointmentsPage() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,6 +119,12 @@ export default function MyAppointmentsPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [cancellingId, setCancellingId] = useState(null);
+    const [reviewAppointment, setReviewAppointment] = useState(null);
+    const [reviewRating, setReviewRating] = useState(0);
+    const [reviewComment, setReviewComment] = useState('');
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [reviewFieldError, setReviewFieldError] = useState('');
+    const [reviewGlobalError, setReviewGlobalError] = useState('');
 
     const LIMIT = 8;
 
@@ -69,6 +165,57 @@ export default function MyAppointmentsPage() {
             toast.error(err.response?.data?.error || 'Cannot cancel this appointment.');
         } finally {
             setCancellingId(null);
+        }
+    };
+
+    const openReviewModal = (appointment) => {
+        setReviewAppointment(appointment);
+        setReviewRating(0);
+        setReviewComment('');
+        setReviewFieldError('');
+        setReviewGlobalError('');
+    };
+
+    const closeReviewModal = () => {
+        if (reviewSubmitting) return;
+        setReviewAppointment(null);
+        setReviewRating(0);
+        setReviewComment('');
+        setReviewFieldError('');
+        setReviewGlobalError('');
+    };
+
+    const handleSubmitReview = async (e) => {
+        e.preventDefault();
+        setReviewFieldError('');
+        setReviewGlobalError('');
+
+        if (!reviewAppointment) return;
+
+        if (!reviewRating) {
+            setReviewFieldError('Please select a star rating.');
+            return;
+        }
+
+        setReviewSubmitting(true);
+        try {
+            await api.post('/reviews', {
+                appointmentId: reviewAppointment.id,
+                rating: reviewRating,
+                comment: reviewComment.trim() || undefined,
+            });
+            setReviewSubmitting(false);
+            toast.success('Review submitted successfully.');
+            closeReviewModal();
+            fetchAppointments(activeTab, page);
+        } catch (err) {
+            const data = err.response?.data;
+            const detailMessage = Array.isArray(data?.details) && data.details.length > 0
+                ? data.details.map((item) => item.message).join(' ')
+                : '';
+            setReviewGlobalError(data?.error || detailMessage || 'Failed to submit review.');
+        } finally {
+            setReviewSubmitting(false);
         }
     };
 
@@ -134,7 +281,7 @@ export default function MyAppointmentsPage() {
                 <div className="appt-list">
                     {appointments.map((appt, index) => {
                         const status = STATUS_CONFIG[appt.status] || STATUS_CONFIG.PENDING;
-                        const StatusIcon = status.icon;
+            const StatusIcon = status.icon;
                         return (
                             <div className="appt-card" key={appt.id} data-status={appt.status} style={{ '--delay': `${index * 0.05}s` }}>
                                 <div className="appt-card-left">
@@ -142,7 +289,7 @@ export default function MyAppointmentsPage() {
                                         <User size={20} />
                                     </div>
                                     <div className="appt-info">
-                                        <h3>Doctor ID: {appt.doctor_id?.slice(0, 8)}…</h3>
+                                        <h3>{appt.doctor_name || `Doctor ID: ${appt.doctor_id?.slice(0, 8)}…`}</h3>
                                         <div className="appt-meta-row">
                                             <span className="appt-meta-item">
                                                 <Calendar size={14} />
@@ -171,6 +318,22 @@ export default function MyAppointmentsPage() {
                                             {cancellingId === appt.id ? 'Cancelling…' : 'Cancel'}
                                         </button>
                                     )}
+
+                                    {appt.status === 'COMPLETED' && !appt.reviewed && (
+                                        <button
+                                            className="btn-review-appt"
+                                            onClick={() => openReviewModal(appt)}
+                                        >
+                                            Write Review
+                                        </button>
+                                    )}
+
+                                    {appt.status === 'COMPLETED' && !!appt.reviewed && (
+                                        <span className="reviewed-badge">
+                                            <Star size={13} />
+                                            Reviewed
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         );
@@ -198,6 +361,22 @@ export default function MyAppointmentsPage() {
                     </button>
                 </div>
             )}
+
+            <ReviewModal
+                appointment={reviewAppointment}
+                rating={reviewRating}
+                comment={reviewComment}
+                submitting={reviewSubmitting}
+                fieldError={reviewFieldError}
+                globalError={reviewGlobalError}
+                onRatingChange={(value) => {
+                    setReviewRating(value);
+                    if (reviewFieldError) setReviewFieldError('');
+                }}
+                onCommentChange={setReviewComment}
+                onClose={closeReviewModal}
+                onSubmit={handleSubmitReview}
+            />
         </div>
     );
 }

@@ -1,0 +1,322 @@
+.doc-appt-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+
+.doc-appt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.doc-appt-header h1 {
+    margin: 0 0 4px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.doc-appt-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.doc-appt-total {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.doc-appt-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.doc-appt-tab {
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.doc-appt-tab:hover,
+.doc-appt-tab.active {
+    color: #136dec;
+    border-bottom-color: #136dec;
+}
+
+.doc-appt-loading,
+.doc-appt-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 0;
+    gap: 12px;
+    color: #64748b;
+}
+
+.doc-appt-empty h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+}
+
+.doc-appt-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.doc-appt-empty-icon {
+    color: #cbd5e1;
+}
+
+.doc-appt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.doc-appt-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px 24px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #136dec;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.doc-appt-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.doc-appt-card[data-status="PENDING"] {
+    border-left-color: #f59e0b;
+}
+
+.doc-appt-card[data-status="CONFIRMED"] {
+    border-left-color: #136dec;
+}
+
+.doc-appt-card[data-status="COMPLETED"] {
+    border-left-color: #16a34a;
+}
+
+.doc-appt-card[data-status="CANCELLED"],
+.doc-appt-card[data-status="REJECTED"] {
+    border-left-color: #dc2626;
+}
+
+.doc-appt-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    flex: 1;
+}
+
+.doc-appt-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    background: #eff6ff;
+    color: #136dec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.doc-appt-info {
+    min-width: 0;
+}
+
+.doc-appt-info h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.doc-appt-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.doc-appt-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.doc-appt-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.doc-appt-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.doc-appt-status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.doc-appt-status-confirmed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.doc-appt-status-completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.doc-appt-status-cancelled {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.doc-appt-status-rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.doc-appt-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.doc-appt-btn {
+    padding: 9px 15px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.doc-appt-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.doc-appt-btn-primary {
+    background: #136dec;
+    color: white;
+}
+
+.doc-appt-btn-danger {
+    background: white;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.doc-appt-btn-success {
+    background: #16a34a;
+    color: white;
+}
+
+.doc-appt-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.doc-appt-page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.doc-appt-page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.doc-appt-page-info {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.spin-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 900px) {
+    .doc-appt-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .doc-appt-side {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    .doc-appt-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .doc-appt-btn {
+        width: 100%;
+    }
+}

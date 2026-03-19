@@ -6,7 +6,7 @@ const rateLimit = require('express-rate-limit');
  */
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 10,
+    limit: 50,
     standardHeaders: 'draft-8',
     legacyHeaders: false,
     message: { error: 'Quá nhiều lần đăng nhập. Thử lại sau 15 phút.' },
@@ -22,7 +22,7 @@ const loginLimiter = rateLimit({
  */
 const registerLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    limit: 5,
+    limit: 10,
     standardHeaders: 'draft-8',
     legacyHeaders: false,
     message: { error: 'Quá nhiều lần đăng ký. Thử lại sau 1 giờ.' }

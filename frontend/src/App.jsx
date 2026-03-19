@@ -10,6 +10,7 @@ import DoctorDetailPage from './pages/patient/DoctorDetailPage';
 import MyAppointmentsPage from './pages/patient/MyAppointmentsPage';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorSchedulePage from './pages/doctor/DoctorSchedulePage';
+import DoctorAppointmentsPage from './pages/doctor/DoctorAppointmentsPage';
 import ProfileSettingsPage from './pages/shared/ProfileSettingsPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
@@ -126,6 +127,13 @@ function AppRoutes() {
         <ProtectedRoute allowedRoles={['DOCTOR']}>
           <DashboardLayout>
             <DoctorSchedulePage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/doctor/appointments" element={
+        <ProtectedRoute allowedRoles={['DOCTOR']}>
+          <DashboardLayout>
+            <DoctorAppointmentsPage />
           </DashboardLayout>
         </ProtectedRoute>
       } />
