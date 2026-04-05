@@ -26,13 +26,14 @@ exports.insertWithConn = async (conn, data) => {
     date,
     startTime,
     endTime,
+    status = 'AWAITING_PAYMENT',
   } = data;
 
   await conn.query(
     `INSERT INTO appointments
       (id, patient_id, doctor_id, schedule_id, date, start_time, end_time, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
-    [id, patientId, doctorId, scheduleId, date, startTime, endTime]
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, patientId, doctorId, scheduleId, date, startTime, endTime, status]
   );
 };
 

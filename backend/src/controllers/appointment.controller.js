@@ -1,10 +1,12 @@
 const pool = require('../config/db');
 const { v4: uuid } = require('uuid');
 const Appointment = require('../models/appointment.model');
+const Payment = require('../models/payment.model');
+const VNPaySvc = require('../services/vnpay.service');
 const NotifySvc = require('../services/notification.service');
 const { parsePagination, buildMeta } = require('../utils/pagination.util');
 
-const VALID_STATUSES = ['PENDING', 'CONFIRMED', 'REJECTED', 'COMPLETED', 'CANCELLED'];
+const VALID_STATUSES = ['AWAITING_PAYMENT', 'PENDING', 'CONFIRMED', 'REJECTED', 'COMPLETED', 'CANCELLED', 'EXPIRED'];
 
 /**
  * POST /api/v1/appointments
@@ -58,23 +60,30 @@ exports.createAppointment = async (req, res) => {
       throw 'Schedule does not belong to this doctor';
     }
 
+    // 3) Lấy consultation_fee của doctor
+    const [doctors] = await conn.query(
+      'SELECT consultation_fee FROM doctors WHERE id = ?',
+      [schedule.doctor_id || doctorId]
+    );
+    const fee = doctors.length ? parseFloat(doctors[0].consultation_fee) : 0;
+
     /**
-     * 3) Insert appointment
-     * - Lưu date/time theo schedule để tránh client “tự chế” giờ
+     * 4) Insert appointment với status AWAITING_PAYMENT
      */
     const appointmentId = uuid();
     await Appointment.insertWithConn(conn, {
       id: appointmentId,
       patientId,
-      doctorId: schedule.doctor_id || doctorId, // ưu tiên từ schedule
+      doctorId: schedule.doctor_id || doctorId,
       scheduleId,
       date: schedule.date,
       startTime: schedule.start_time,
-      endTime: schedule.end_time
+      endTime: schedule.end_time,
+      status: 'AWAITING_PAYMENT',
     });
 
     /**
-     * 4) Đánh dấu schedule đã bị chiếm
+     * 5) Đánh dấu schedule đã bị chiếm (slot bị hold)
      */
     await conn.query(
       'UPDATE schedules SET is_available = FALSE WHERE id = ?',
@@ -82,18 +91,29 @@ exports.createAppointment = async (req, res) => {
     );
 
     /**
-     * 5) Commit transaction: mọi thứ OK
+     * 6) Insert payment record (PENDING, hết hạn sau 15 phút)
+     */
+    const paymentId = uuid();
+    const txnRef = paymentId; // dùng paymentId làm mã giao dịch
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await Payment.insertWithConn(conn, {
+      id: paymentId,
+      appointmentId,
+      amount: fee,
+      vnpTxnRef: txnRef,
+      expiresAt,
+    });
+
+    /**
+     * 7) Commit — tất cả OK
      */
     await conn.commit();
 
-    // Gửi notification cho doctor (fire-and-forget, không ảnh hưởng response)
-    NotifySvc.onAppointmentCreated({
-      doctorId: schedule.doctor_id || doctorId,
-      date: schedule.date,
-      startTime: schedule.start_time
-    });
+    // 8) Tạo VNPay URL (sau commit, an toàn nếu URL generation lỗi)
+    const ipAddr = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+    const paymentUrl = VNPaySvc.createPaymentUrl(txnRef, fee, ipAddr);
 
-    return res.status(201).json({ message: 'Appointment created', id: appointmentId });
+    return res.status(201).json({ message: 'Appointment created', id: appointmentId, paymentUrl });
   } catch (err) {
     /**
      * Nếu có lỗi ở bất cứ bước nào -> rollback để DB không bị “dở dang”
@@ -166,7 +186,7 @@ exports.reject = async (req, res) => {
     return res.status(403).json({ error: 'Not your appointment' });
   }
 
-  if (appointment.status !== 'PENDING') {
+  if (!['PENDING', 'CONFIRMED'].includes(appointment.status)) {
     return res.status(400).json({ error: `Cannot reject when status is ${appointment.status}` });
   }
 
@@ -187,6 +207,23 @@ exports.reject = async (req, res) => {
     );
 
     await conn.commit();
+
+    // Hoàn tiền nếu đã thanh toán
+    try {
+      const payment = await Payment.findByAppointmentId(id);
+      if (payment && payment.status === 'PAID') {
+        await VNPaySvc.refund(
+          payment.vnp_txn_ref,
+          payment.vnp_transaction_no,
+          payment.amount,
+          payment.paid_at ? payment.paid_at.toISOString().replace(/[-T:.Z]/g, '').slice(0, 14) : '',
+          `doctor:${doctorId}`
+        );
+        await Payment.updateRefunded(payment.id);
+      }
+    } catch (refundErr) {
+      console.error('REFUND ERROR (reject):', refundErr.message);
+    }
 
     // Thông báo bệnh nhân
     NotifySvc.onAppointmentRejected({
@@ -293,8 +330,8 @@ exports.cancel = async (req, res) => {
     return res.status(403).json({ error: 'Not your appointment' });
   }
 
-  // 3) Chỉ huỷ được khi đang PENDING
-  if (appointment.status !== 'PENDING') {
+  // 3) Chỉ huỷ được khi đang PENDING hoặc AWAITING_PAYMENT
+  if (!['PENDING', 'AWAITING_PAYMENT'].includes(appointment.status)) {
     return res.status(400).json({
       error: `Cannot cancel when status is ${appointment.status}`
     });
@@ -317,6 +354,23 @@ exports.cancel = async (req, res) => {
     );
 
     await conn.commit();
+
+    // Hoàn tiền nếu đã thanh toán
+    try {
+      const payment = await Payment.findByAppointmentId(id);
+      if (payment && payment.status === 'PAID') {
+        await VNPaySvc.refund(
+          payment.vnp_txn_ref,
+          payment.vnp_transaction_no,
+          payment.amount,
+          payment.paid_at ? payment.paid_at.toISOString().replace(/[-T:.Z]/g, '').slice(0, 14) : '',
+          `patient:${patientId}`
+        );
+        await Payment.updateRefunded(payment.id);
+      }
+    } catch (refundErr) {
+      console.error('REFUND ERROR (cancel):', refundErr.message);
+    }
 
     // Thông báo bác sĩ (slot đã mở lại)
     NotifySvc.onAppointmentCancelled({

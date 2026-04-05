@@ -39,4 +39,10 @@ app.use('/api/v1/notifications', require('./routes/notification.routes'));
 // Test API (for Flutter connectivity)
 app.use('/test', require('./routes/test.routes'));
 
+// Payments API (VNPay return + IPN)
+app.use('/api/v1/payments', require('./routes/payment.routes'));
+
+// Khởi chạy cron job expire payments (mỗi 1 phút)
+require('./jobs/expirePayments.job').start();
+
 module.exports = app;
